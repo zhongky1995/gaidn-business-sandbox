@@ -36,21 +36,29 @@
  function renderReview(){
    const d=state.draft;
    let classification='信息待完善';try{classification=M.diagnose(d).classification;}catch{}
-   let html=`<fieldset class="review-block"><legend>这次分析哪项业务</legend><div class="review-grid"><label>企业或经营者名称${input('subject.name',d.subject.name,40)}</label><label>经营方式${select('subject.team_mode',M.OPTIONS.team_mode,d.subject.team_mode)}</label><label class="span-two">本次主营业务${input('subject.business',d.subject.business,100)}</label></div>${d.is_example?'<p class="small muted" style="margin:14px 0 0">这是虚构示例，保存图片时会保留示例标识。</p>':''}</fieldset>`;
+   let html=`<fieldset id="preflight-check" class="review-block" hidden><legend>生成前还需确认</legend><p class="small muted">明确“没有资料”或“尚未安排”也可以生成起步路线；请按真实情况填写。</p><ul id="preflight-list"></ul></fieldset><fieldset class="review-block"><legend>这次分析哪项业务</legend><div class="review-grid"><label>企业或经营者名称${input('subject.name',d.subject.name,40)}</label><label>经营方式${select('subject.team_mode',M.OPTIONS.team_mode,d.subject.team_mode)}</label><label class="span-two">本次主营业务${input('subject.business',d.subject.business,100)}</label></div>${d.is_example?'<p class="small muted" style="margin:14px 0 0">这是虚构示例，保存图片时会保留示例标识。</p>':''}</fieldset>`;
    html+=`<fieldset class="review-block"><legend>经营逻辑</legend><p class="review-summary">按目前信息：${esc(classification)}</p>`;
    d.business_modes.forEach((m,i)=>{html+=`<div class="mode-title">${d.business_modes.length>1?'经营逻辑 '+(i+1):'客户购买与交付方式'}</div><p class="review-summary">${esc(M.OPTIONS.customer_result[m.customer_result.value])} · ${esc(M.OPTIONS.delivery_method[m.delivery_method.value])}</p><p class="small muted">${esc(m.customer_result.evidence||'购买结果尚待补充')}</p><details><summary>查看或修改这组判断</summary>${Object.keys(M.MODE_LABELS).map(k=>factEditor('business_modes.'+i,k,m[k])).join('')}${d.business_modes.length>1?`<button type="button" class="text-button danger-text" data-remove-mode="${i}">移除这组经营逻辑</button>`:''}</details>`;});
    html+=`<button type="button" id="add-mode" class="text-button"${d.business_modes.length>=2?' disabled':''}>同一业务还有一种不可分的经营逻辑</button></fieldset>`;
    html+=`<fieldset class="review-block"><legend>已有积累与首做方向</legend><p class="small muted">选择最值得先用起来的一项。没有具体依据时，可以不列；最多三项。</p>`;
    d.assets.forEach((a,i)=>{html+=`<div class="asset-item"><div class="asset-top"><label><input type="radio" name="focus" value="${i}"${d.focus_asset===i?' checked':''}>${esc(a.label)}</label><button type="button" class="text-button danger-text" data-remove-asset="${i}">移除</button></div><p>${esc(a.evidence||'请补充一个实际发生过的例子')}</p><details><summary>修改这项积累</summary><div class="review-grid"><label>名称${input('assets.'+i+'.label',a.label,10)}</label><label>积累类别${select('assets.'+i+'.kind',M.ASSETS,a.kind)}</label><label class="span-two">具体依据${field('assets.'+i+'.evidence',a.evidence,180)}</label><label class="span-two">目前记录状态${select('assets.'+i+'.status',M.OPTIONS.asset_status,a.status)}</label></div></details></div>`;});
    html+=`<button type="button" id="add-asset" class="text-button"${d.assets.length>=3?' disabled':''}>补充一项已有积累</button></fieldset>`;
-   html+=`<fieldset class="review-block"><legend>AI 起步条件</legend><p class="review-summary">${esc(M.OPTIONS.materials[d.readiness.materials.value])} · ${esc(M.OPTIONS.owner[d.readiness.owner.value])}</p><p class="small muted">这些条件决定从哪里开始、是否适合展示变化曲线。未知会保留为未知。</p><details><summary>核对资料、复用与推进条件</summary>${Object.keys(M.READY_LABELS).map(k=>factEditor('readiness',k,d.readiness[k])).join('')}</details></fieldset>`;
-   $('#review-form').innerHTML=html;issuesAt('#review-errors',[]);
+   html+=`<fieldset class="review-block"><legend>AI 起步条件</legend><p class="small muted">先确认资料状态与复核安排。这些事实决定从哪里起步；曲线会按经营机制匹配，未落实的条件展示为准备与验证阶段。</p>${['materials','owner'].map(k=>factEditor('readiness',k,d.readiness[k])).join('')}<details><summary>核对重复、复用与推进方式（尚未确定可保留）</summary>${Object.keys(M.READY_LABELS).filter(k=>!['materials','owner'].includes(k)).map(k=>factEditor('readiness',k,d.readiness[k])).join('')}</details></fieldset>`;
+   $('#review-form').innerHTML=html;issuesAt('#review-errors',[]);updatePreflight();
  }
- function markDirty(){if(!state.reviewEdited){track('review_edit',{input_origin:origin()});state.reviewEdited=true;}state.dirty=true;document.querySelector('[data-step="result"]').disabled=true;status('信息已修改，确认后会重新生成结果。');}
+ function updatePreflight(){
+   const questions=M.requiredQuestions(readReview()),box=$('#preflight-check'),list=$('#preflight-list');
+   box.hidden=!questions.length;list.replaceChildren();
+   for(const question of questions){const li=document.createElement('li');li.textContent=question.message;list.append(li);}
+   $('#generate-result').disabled=Boolean(questions.length);
+   $('#generate-result').textContent=questions.length?'先补齐上面的 '+questions.length+' 项信息':'确认信息，生成诊断';
+ }
+ function markDirty(){if(!state.reviewEdited){track('review_edit',{input_origin:origin()});state.reviewEdited=true;}state.dirty=true;document.querySelector('[data-step="result"]').disabled=true;updatePreflight();status('信息已修改，确认后会重新生成结果。');}
  function generate(){
    try{
      const data=M.validate(readReview()),result=M.diagnose(data);
      if(result.conflicts.length)throw new M.InputError(result.conflicts);
+     if(result.required.length)throw new M.InputError(result.required);
      state.draft=data;state.result=result;state.dirty=false;state.active=null;issuesAt('#review-errors',[]);renderBasis();show('result');
      $('#result-subtitle').textContent=result.classification+(result.data.is_example?' · 虚构示例':'');
      status(result.complete?'结果已生成。可以查看依据、修改信息或保存图片。':'已保留待补充项；当前结果不会强行分类或预测改善。');track('diagnosis_generate',{input_origin:origin(),status:'success',result_status:result.complete?'complete':'pending'});

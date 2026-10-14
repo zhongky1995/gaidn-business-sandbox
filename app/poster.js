@@ -76,24 +76,27 @@
     line(pad,y,w-pad,y);y+=20;
     if(result.curve){
       y+=text(result.curve.title,pad,y,small?16:19,p.fg,500)+7;
-      y+=text('有效交付能力 · 情景示意',pad,y,11,p.muted)+4;
+      y+=text('有效交付能力 · '+(result.curve.conditional?'条件情景':'情景示意'),pad,y,11,p.muted)+4;
       const left=pad+34,right=w-pad-5,top=y+12,bottom=y+101;
       line(left,top,right,top,p.line,.6);line(left,bottom,right,bottom);
       text('更高',pad,top-7,11,p.muted);text('当前',pad,bottom-7,11,p.muted);
-      let d='';for(let i=0;i<=80;i++){const t=i/80;d+=(i?' L ':'M ')+(left+(right-left)*t)+' '+(bottom-(bottom-top-5)*M.curveValue(result.curve.id,t));}
-      add(`<path d="${d} L ${right} ${bottom} L ${left} ${bottom} Z" fill="url(#curve-area)"/><path d="${d}" fill="none" stroke="${p.ink}" stroke-width="2.3" stroke-linecap="round"/>`);
+      let d='',prepared='';for(let i=0;i<=80;i++){const t=i/80,point=(left+(right-left)*t)+' '+(bottom-(bottom-top-5)*M.curveValue(result.curve.id,t,result.curve.preparation));d+=(i?' L ':'M ')+point;if(t<=(result.curve.id==='explore' ? .42 : result.curve.preparation))prepared+=(prepared?' L ':'M ')+point;}
+      add(`<path d="${d} L ${right} ${bottom} L ${left} ${bottom} Z" fill="url(#curve-area)"/><path d="${d}" fill="none" stroke="${p.ink}" stroke-width="2.3" stroke-linecap="round"${result.curve.conditional?' stroke-dasharray="6 4"':''}/>`);
+      if(result.curve.conditional&&prepared)add(`<path d="${prepared}" fill="none" stroke="${p.ink}" stroke-width="2.3" stroke-linecap="round"/>`);
       text(result.curve.phases[0],left,bottom+11,11,p.muted,400,'start',(right-left)/2);text(result.curve.phases[1],right,bottom+11,11,p.muted,400,'end',(right-left)/2);
       y=bottom+42;y+=text('相对推进过程 · 同等人员投入与交付质量假设',pad,y,11,p.muted,400,'start',inner,18)+9;
+      y+=text(result.curve.basis,pad,y,11,p.muted,400,'start',inner,19)+8;
       y+=text(result.curve.condition,pad,y,11,p.muted,400,'start',inner,19)+8;
     }else{
-      y+=text('先补齐条件，再看变化节奏',pad,y,small?15:18,p.fg,500)+8;
-      y+=text('目前暂不生成改善曲线。还需核实资料是否可用、谁负责复核，以及重复任务或经验复用能否成立。',pad,y,12,p.muted,400,'start',inner,21)+10;
+      y+=text('先核对主营交付逻辑',pad,y,small?15:18,p.fg,500)+8;
+      y+=text('经营信息存在矛盾，请先在核对页确认客户购买什么、怎样完成交付。',pad,y,12,p.muted,400,'start',inner,21)+10;
     }
     y+=text('本图用于经营探索，曲线不预测日期、营收或增长率。',pad,y,11,p.muted,400,'start',inner,18)+18;
     line(pad,y,w-pad,y);y+=13;
     y+=text('GAIDN · 企业 AI 经营探索',pad,y,11,p.muted,400,'start',inner)+9;
     const height=Math.ceil(y+8);
-    const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${height}" viewBox="0 0 ${w} ${height}" role="img" aria-label="${esc(result.data.subject.name+'：'+result.classification+'。'+result.headline)}" style="font-family:${esc(font)}"><title>${esc(result.classification)}</title><desc>${esc(result.explanation+' '+result.next)}</desc><rect x=".5" y=".5" width="${w-1}" height="${height-1}" rx="18" fill="${p.bg}" stroke="${p.line}"/>${parts.join('')}</svg>`;
+    const curveDescription=result.curve?' 情景走向：'+result.curve.title+'。'+result.curve.basis+' '+result.curve.condition:'';
+    const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${height}" viewBox="0 0 ${w} ${height}" role="img" aria-label="${esc(result.data.subject.name+'：'+result.classification+'。'+result.headline)}" style="font-family:${esc(font)}"><title>${esc(result.classification)}</title><desc>${esc(result.explanation+' '+result.next+curveDescription)}</desc><rect x=".5" y=".5" width="${w-1}" height="${height-1}" rx="18" fill="${p.bg}" stroke="${p.line}"/>${parts.join('')}</svg>`;
     return {svg,width:w,height,hitTargets};
   }
   host.GAIDNPoster={poster,wrap};

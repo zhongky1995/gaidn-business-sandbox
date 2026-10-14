@@ -123,20 +123,67 @@
       if(stage==='use')next='先让 AI '+verb+'，由'+who+'核对、执行，再把结果与修正记录留下来。';
       if(stage==='clarify')next='先核实“'+focus.label+'”能否查到、由谁复核，再尝试让 AI '+verb+'。';
     }
-    let curve=null;
-    if(complete&&focus&&focus.status==='documented'&&v.owner==='assigned'){
-      if(v.materials==='ready'&&v.standard_task==='yes'&&v.rollout==='single_task')curve='fast';
-      else if(v.materials==='ready'&&v.rollout==='phased')curve='linear';
-      else if(['ready','scattered'].includes(v.materials)&&v.repeated_need==='yes'&&v.reuse_basis==='yes')curve='delayed';
-    }
     const curves={
-      fast:{title:'先释放，再优化',condition:'已有清楚的重复任务、可用资料与复核负责人；先在一项任务中接入，改善可能较早出现，随后放缓。',phases:['接入明确任务','逐步趋稳']},
-      linear:{title:'一步一步，让改善累积',condition:'资料可用，已有维护与复核负责人，并计划分环节接入；随着团队逐步采用，改善可能持续累积。',phases:['分批接入','持续改善']},
-      delayed:{title:'先积累，再加速',condition:'同类需求反复出现，已有复用基础和维护负责人；资料经整理、核对和磨合后，改善才可能逐步加快。',phases:['整理与磨合','复用逐渐形成']}
+      fast:{title:'先释放，再优化',preparedTitle:'先准备，再释放',mechanism:'先接入明确的重复任务，较早释放效率，再逐步优化',phases:['接入明确任务','逐步趋稳']},
+      linear:{title:'一步一步，让改善累积',preparedTitle:'先试点，再逐步推广',mechanism:'分环节接入，让改善随着采用逐步累积',phases:['分批接入','持续改善']},
+      delayed:{title:'先积累，再加速',preparedTitle:'先沉淀，再加速复用',mechanism:'先沉淀案例与做法，再通过复用逐步释放价值',phases:['整理与磨合','复用逐渐形成']},
+      explore:{title:'先找到起点，再验证价值',preparedTitle:'先找到起点，再验证价值',mechanism:'先明确一项主营任务，再验证一个小成果',phases:['明确主营任务','小范围验证']}
     };
-    return {data,ids,typeNames,classification,complete,conflicts,pending,headline,headlineReady,explanation,next,stage,assets:assetNodes,curve:curve?{id:curve,...curves[curve]}:null,focus};
+    let curve=null;
+    if(!conflicts.length){
+      const defaults={T1:'fast',T2:'linear',T3:'delayed',T4:'delayed',T5:'fast',T6:'linear'};
+      const routes=ids.map(id=>defaults[id]);
+      let id=routes.includes('delayed')?'delayed':routes.includes('linear')?'linear':routes.length?'fast':'explore';
+      let source=ids.length?'type':'exploration';
+      if(complete&&focus?.status==='documented'&&v.owner==='assigned'){
+        if(v.materials==='ready'&&v.standard_task==='yes'&&v.rollout==='single_task'){id='fast';source='conditions';}
+        else if(v.materials==='ready'&&v.rollout==='phased'){id='linear';source='conditions';}
+        else if(['ready','scattered'].includes(v.materials)&&v.repeated_need==='yes'&&v.reuse_basis==='yes'){id='delayed';source='conditions';}
+      }
+      const requirements=[];
+      if(!complete)requirements.push('主营交付逻辑');
+      if(!focus)requirements.push('一项真实积累');
+      if(v.materials!=='ready'||focus?.status==='experience_only')requirements.push(v.materials==='scattered'?'整理已有资料':'可核对的资料');
+      if(v.owner!=='assigned')requirements.push('维护与复核安排');
+      if(id==='fast'&&v.standard_task!=='yes')requirements.push('一项明确的重复任务');
+      if(id==='linear'&&v.rollout!=='phased')requirements.push('分环节推进安排');
+      if(id==='delayed'&&v.repeated_need!=='yes')requirements.push('同类需求验证');
+      if(id==='delayed'&&v.reuse_basis!=='yes')requirements.push('可复用做法');
+      const conditional=Boolean(requirements.length),definition=curves[id];
+      const preparation=conditional&&id!=='explore'?(v.materials==='none'||v.owner==='none'||focus?.status==='experience_only' ? .32 : .2):0;
+      const basis=source==='conditions'?'匹配依据：已确认的起步条件支持'+definition.mechanism+'。':source==='type'?'匹配依据：'+typeNames.join(' × ')+'，按“'+definition.mechanism+'”示意。':'经营逻辑待确认，先展示从明确任务到小范围验证的起步路线。';
+      const condition=conditional?'准备与验证：'+requirements.join('、')+'。虚线示意这些条件逐步落实后的可能走向。':'在资料、人工复核与交付质量保持可用的前提下，沿这条路径验证改善；曲线不是收益承诺。';
+      curve={id,source,conditional,preparation,basis,condition,title:conditional?definition.preparedTitle:definition.title,phases:conditional&&id!=='explore'?['准备与试点',definition.phases[1]]:definition.phases};
+    }
+    return {data,ids,typeNames,classification,complete,conflicts,pending,headline,headlineReady,explanation,next,stage,assets:assetNodes,curve,focus,required:requiredQuestions(data)};
   }
-  function curveValue(id,t){if(id==='fast')return 1-Math.pow(1-t,4);if(id==='linear')return t;const z=Math.max(0,Math.min(1,(t-.24)/.68));return z*z*(3-2*z);}
-  const api={TYPES,ASSETS,OPTIONS,MODE_LABELS,READY_LABELS,VERSION,InputError,parse,validate,diagnose,curveValue,clone};
+  function requiredQuestions(data){
+    const questions=[];
+    if(!data.subject.name.trim())questions.push({path:'subject.name',message:'请填写企业或经营者名称，也可以用化名。'});
+    if(data.subject.business.trim().length<2)questions.push({path:'subject.business',message:'请用一句话明确这次分析的主营业务。'});
+    data.business_modes.forEach((m,i)=>{
+      const result=classifyMode(m);
+      if(result.pending||result.conflict)questions.push({path:'business_modes.'+i,message:result.pending||result.conflict});
+      for(const [key,label] of Object.entries(MODE_LABELS))if(m[key].value!=='unknown'&&m[key].evidence.trim().length<2)questions.push({path:'business_modes.'+i+'.'+key,message:'请为“'+label+'”补充一句实际依据。'});
+    });
+    for(const [key,question] of [['materials','请确认资料状态：有可用资料、有零散记录，还是尚未留存？'],['owner','请确认复核安排：已有负责人（也可以是你自己），还是尚未安排？']]){
+      const fact=data.readiness[key];
+      if(fact.value==='unknown')questions.push({path:'readiness.'+key,message:question});
+      else if(fact.evidence.trim().length<2)questions.push({path:'readiness.'+key,message:'请为“'+READY_LABELS[key]+'”补充一句实际依据。'});
+    }
+    for(const key of Object.keys(READY_LABELS).filter(k=>!['materials','owner'].includes(k)))if(data.readiness[key].value!=='unknown'&&data.readiness[key].evidence.trim().length<2)questions.push({path:'readiness.'+key,message:'请为“'+READY_LABELS[key]+'”补充一句实际依据，尚未确定时可以保留未知。'});
+    data.assets.forEach((asset,i)=>{
+      if(asset.label.trim().length<2)questions.push({path:'assets.'+i+'.label',message:'请为这项真实积累填写一个清楚的名称。'});
+      if(asset.evidence.trim().length<8)questions.push({path:'assets.'+i+'.evidence',message:'请为“'+(asset.label||'这项积累')+'”补充一个真实发生过的例子。'});
+    });
+    return questions;
+  }
+  function curveValue(id,t,preparation=0){
+    t=Math.max(0,Math.min(1,t));
+    if(id==='explore'){const z=Math.max(0,(t-.42)/.58);return .55*z*z*(3-2*z);}
+    const start=Math.max(0,Math.min(.6,preparation));t=Math.max(0,(t-start)/(1-start));
+    if(id==='fast')return 1-Math.pow(1-t,4);if(id==='linear')return t;const z=Math.max(0,Math.min(1,(t-.24)/.68));return z*z*(3-2*z);
+  }
+  const api={TYPES,ASSETS,OPTIONS,MODE_LABELS,READY_LABELS,VERSION,InputError,parse,validate,diagnose,requiredQuestions,curveValue,clone};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;else host.GAIDNModel=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
