@@ -563,7 +563,7 @@
    if(b.dataset.removeAsset!==undefined){const i=Number(b.dataset.removeAsset);d.assets.splice(i,1);d.focus_asset=d.assets.length?Math.min(d.focus_asset>i?d.focus_asset-1:d.focus_asset,d.assets.length-1):null;changed=true;}
    if(b.id==='add-mode'&&d.business_modes.length<2){d.business_modes.push({customer_result:blankFact(),delivery_method:blankFact(),exchange_role:blankFact()});changed=true;}
    if(b.dataset.removeMode!==undefined&&d.business_modes.length>1){d.business_modes.splice(Number(b.dataset.removeMode),1);changed=true;}
-   if(changed){state.draft=d;markDirty();renderReview();}
+   if(changed){state.draft=d;renderReview();markDirty();}
  });
  $('#generate-result').addEventListener('click',generate);
  $('#back-import').addEventListener('click',()=>{state.draft=readReview();show('start');});
