@@ -24,6 +24,8 @@
 
 Google Analytics 默认报告仍会采集标准访问标识，本站不给 Google 发送业务正文。页地址剔除查询参数及片段，referrer 只保留域名。关闭网页数据流的增强型衡量，防止自动文件/表单信息与自定义事件重复。
 
-Google 端建议注册事件级自定义维度 `input_origin`、`input_method`、`step`、`status`、`result_status`，便于报表筛选。后台注册状态以本次部署记录为准。查看“实时”或 DebugView 验证收集；常规报表不是即时更新。
+Google 端已于 2026-10-14 注册五个事件级自定义维度：资料来源 `input_origin`、导入方式 `input_method`、使用步骤 `step`、操作状态 `status`、诊断结果状态 `result_status`，便于报表筛选。查看“实时”或 DebugView 验证收集；常规报表不是即时更新。
 
 维护：修改 `app/analytics.js` 白名单或 `app/ui.js` 触发点，运行 `node --test tests/analytics.test.cjs`、`python3 publish.py`，将源码、dist、docs 一并提交发布。对规则或 UI 的新改动补适当检查。
+
+本次安装已通过 GA4 DebugView 接收验证：复制提示词、成功/失败导入、生成诊断、生成图片和下载图片均已出现。验证会话标记为 debug，使用虚构示例；这些记录是技术测试，不代表真实客户使用或转化。
