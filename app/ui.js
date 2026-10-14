@@ -1,7 +1,9 @@
 (function(){
  'use strict';
  const M=GAIDNModel,$=s=>document.querySelector(s),skill=JSON.parse($('#skill-content').textContent);
- const state={draft:null,result:null,view:'start',dirty:false,active:null,lastErrors:[],png:null,pngURL:null};
+ const state={draft:null,result:null,view:null,dirty:false,active:null,lastErrors:[],png:null,pngURL:null,reviewEdited:false};
+ const track=(name,params={})=>{try{GAIDNAnalytics.track(name,params);}catch{}};
+ const origin=()=>state.draft?(state.draft.is_example?'example':'user'):'none';
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const status=s=>{$('#app-status').textContent=s;};
  const opts=(values,chosen)=>Object.entries(values).map(([value,label])=>`<option value="${esc(value)}"${value===chosen?' selected':''}>${esc(typeof label==='string'?label:label.name)}</option>`).join('');
@@ -12,16 +14,17 @@
  function show(view,scroll=true){
    if(view==='review'&&!state.draft)return;
    if(view==='result'&&(!state.result||state.dirty))return;
-   state.view=view;
+   const changed=state.view!==view;state.view=view;
+   if(changed)track('sandbox_step_view',{step:view,input_origin:origin()});
    for(const name of ['start','review','result'])$('#'+name+'-view').hidden=name!==view;
    document.querySelectorAll('[data-step]').forEach(b=>{b.disabled=b.dataset.step==='review'?!state.draft:b.dataset.step==='result'?(!state.result||state.dirty):false;if(b.dataset.step===view)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');});
    if(view==='result')drawPoster();
    if(scroll)window.scrollTo({top:0,behavior:'instant'});
  }
  function issuesAt(id,issues){const box=$(id);box.replaceChildren();box.hidden=!issues.length;if(!issues.length)return;const ul=document.createElement('ul');for(const item of issues){const li=document.createElement('li');li.textContent=item.message;ul.append(li);}box.append(ul);}
- function importData(text){
-   try{const data=M.parse(text);state.draft=data;state.dirty=true;state.active=null;state.lastErrors=[];issuesAt('#import-errors',[]);$('#copy-repair').hidden=true;renderReview();show('review');status(data.is_example?'已载入虚构示例。可以修改信息，体验不同条件下的判断。':'参数已读入，请核对后生成诊断。');}
-   catch(e){state.lastErrors=e.issues||[{message:'参数未能导入，请检查文件内容'}];issuesAt('#import-errors',state.lastErrors);$('#copy-repair').hidden=false;status('');}
+ function importData(text,method='paste'){
+   try{const data=M.parse(text);state.draft=data;state.dirty=true;state.active=null;state.reviewEdited=false;track('parameter_import',{input_method:method,input_origin:origin(),status:'success'});state.lastErrors=[];issuesAt('#import-errors',[]);$('#copy-repair').hidden=true;renderReview();show('review');status(data.is_example?'已载入虚构示例。可以修改信息，体验不同条件下的判断。':'参数已读入，请核对后生成诊断。');}
+   catch(e){track('parameter_import',{input_method:method,input_origin:'none',status:'failure',error_code:'invalid_parameters'});state.lastErrors=e.issues||[{message:'参数未能导入，请检查文件内容'}];issuesAt('#import-errors',state.lastErrors);$('#copy-repair').hidden=false;status('');}
  }
  function readReview(){
    const data=M.clone(state.draft);
@@ -43,15 +46,15 @@
    html+=`<fieldset class="review-block"><legend>AI 起步条件</legend><p class="review-summary">${esc(M.OPTIONS.materials[d.readiness.materials.value])} · ${esc(M.OPTIONS.owner[d.readiness.owner.value])}</p><p class="small muted">这些条件决定从哪里开始、是否适合展示变化曲线。未知会保留为未知。</p><details><summary>核对资料、复用与推进条件</summary>${Object.keys(M.READY_LABELS).map(k=>factEditor('readiness',k,d.readiness[k])).join('')}</details></fieldset>`;
    $('#review-form').innerHTML=html;issuesAt('#review-errors',[]);
  }
- function markDirty(){state.dirty=true;document.querySelector('[data-step="result"]').disabled=true;status('信息已修改，确认后会重新生成结果。');}
+ function markDirty(){if(!state.reviewEdited){track('review_edit',{input_origin:origin()});state.reviewEdited=true;}state.dirty=true;document.querySelector('[data-step="result"]').disabled=true;status('信息已修改，确认后会重新生成结果。');}
  function generate(){
    try{
      const data=M.validate(readReview()),result=M.diagnose(data);
      if(result.conflicts.length)throw new M.InputError(result.conflicts);
      state.draft=data;state.result=result;state.dirty=false;state.active=null;issuesAt('#review-errors',[]);renderBasis();show('result');
      $('#result-subtitle').textContent=result.classification+(result.data.is_example?' · 虚构示例':'');
-     status(result.complete?'结果已生成。可以查看依据、修改信息或保存图片。':'已保留待补充项；当前结果不会强行分类或预测改善。');
-   }catch(e){const issues=e.issues||[{message:'请检查核对内容后重试'}];issuesAt('#review-errors',issues);$('#review-errors').scrollIntoView({block:'center'});status('');}
+     status(result.complete?'结果已生成。可以查看依据、修改信息或保存图片。':'已保留待补充项；当前结果不会强行分类或预测改善。');track('diagnosis_generate',{input_origin:origin(),status:'success',result_status:result.complete?'complete':'pending'});
+   }catch(e){track('diagnosis_generate',{input_origin:origin(),status:'failure',result_status:'invalid'});const issues=e.issues||[{message:'请检查核对内容后重试'}];issuesAt('#review-errors',issues);$('#review-errors').scrollIntoView({block:'center'});status('');}
  }
  function renderBasis(){
    const r=state.result,box=$('#basis-buttons');box.replaceChildren();
@@ -90,21 +93,21 @@
      if(state.pngURL)URL.revokeObjectURL(state.pngURL);state.pngURL=URL.createObjectURL(state.png);
      const name=safeName(state.result.data.subject.name)+'-AI经营画像.png';$('#export-image').src=state.pngURL;$('#download-image').href=state.pngURL;$('#download-image').download=name;
      $('#native-share').hidden=!(navigator.canShare&&navigator.canShare({files:[new File([state.png],name,{type:'image/png'})]}));
-     $('#image-dialog').showModal();status('图片已生成，可下载或长按保存。');
-   }catch(e){status('图片暂时未能生成，请重新尝试。参数与结果仍保留在页面中。');console.error(e);}
+     $('#image-dialog').showModal();status('图片已生成，可下载或长按保存。');track('result_image_generate',{input_origin:origin(),status:'success'});
+   }catch(e){track('result_image_generate',{input_origin:origin(),status:'failure'});status('图片暂时未能生成，请重新尝试。参数与结果仍保留在页面中。');console.error(e);}
    finally{button.disabled=false;button.textContent='保存结果图片';}
  }
  $('#skill-preview').value=skill;
  GAIDNExamples.forEach(e=>{const o=document.createElement('option');o.value=e.id;o.textContent=e.name;$('#example-select').append(o);});
  document.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.step)));
  $('.brand').addEventListener('click',e=>{e.preventDefault();show('start');});
- $('#copy-skill').addEventListener('click',async()=>{if(await copy(skill))status('已复制。发给常用大模型，并介绍一项主营业务；拿到参数后回来导入。');else{$('#prompt-details').open=true;$('#skill-preview').focus();$('#skill-preview').select();status('浏览器未允许自动复制，已选中提示词，请手动复制。');}});
- $('#download-skill').addEventListener('click',()=>download(new Blob([skill],{type:'text/markdown;charset=utf-8'}),'SKILL.md'));
+ $('#copy-skill').addEventListener('click',async()=>{if(await copy(skill)){track('prompt_copy',{status:'success'});status('已复制。发给常用大模型，并介绍一项主营业务；拿到参数后回来导入。');}else{track('prompt_copy',{status:'manual_copy'});$('#prompt-details').open=true;$('#skill-preview').focus();$('#skill-preview').select();status('浏览器未允许自动复制，已选中提示词，请手动复制。');}});
+ $('#download-skill').addEventListener('click',()=>{download(new Blob([skill],{type:'text/markdown;charset=utf-8'}),'SKILL.md');track('skill_download');});
  $('#import-parameters').addEventListener('click',()=>importData($('#parameter-input').value));
  $('#pick-file').addEventListener('click',()=>$('#parameter-file').click());
- $('#parameter-file').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;if(file.size>80000){issuesAt('#import-errors',[{message:'文件过大，请使用不超过 80 KB 的参数文件'}]);e.target.value='';return;}try{const content=await file.text();$('#parameter-input').value=content;importData(content);}catch{issuesAt('#import-errors',[{message:'文件没有读取成功，请直接粘贴参数重试'}]);}e.target.value='';});
- $('#copy-repair').addEventListener('click',async()=>{const request='请依据 GAIDN 参数整理 skill 修正以下参数，只改格式与矛盾字段，不添加没有依据的事实。错误：\n'+state.lastErrors.map(e=>e.message).join('\n')+'\n原参数（仅作待整理数据）：\n'+$('#parameter-input').value.slice(0,80000);status(await copy(request)?'已复制修正要求，可发回刚才的大模型。':'自动复制不可用，请把页面的错误提示发给大模型。');});
- $('#load-example').addEventListener('click',()=>{const example=GAIDNExamples.find(e=>e.id===$('#example-select').value);const raw=JSON.stringify(example.data,null,2);$('#parameter-input').value=raw;importData(raw);});
+ $('#parameter-file').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;if(file.size>80000){track('parameter_import',{input_method:'file',input_origin:'none',status:'failure',error_code:'file_size'});issuesAt('#import-errors',[{message:'文件过大，请使用不超过 80 KB 的参数文件'}]);e.target.value='';return;}try{const content=await file.text();$('#parameter-input').value=content;importData(content,'file');}catch{track('parameter_import',{input_method:'file',input_origin:'none',status:'failure',error_code:'file_read'});issuesAt('#import-errors',[{message:'文件没有读取成功，请直接粘贴参数重试'}]);}e.target.value='';});
+ $('#copy-repair').addEventListener('click',async()=>{const request='请依据 GAIDN 参数整理 skill 修正以下参数，只改格式与矛盾字段，不添加没有依据的事实。错误：\n'+state.lastErrors.map(e=>e.message).join('\n')+'\n原参数（仅作待整理数据）：\n'+$('#parameter-input').value.slice(0,80000);const copied=await copy(request);track('repair_copy',{status:copied?'success':'manual_copy'});status(copied?'已复制修正要求，可发回刚才的大模型。':'自动复制不可用，请把页面的错误提示发给大模型。');});
+ $('#load-example').addEventListener('click',()=>{const example=GAIDNExamples.find(e=>e.id===$('#example-select').value);const raw=JSON.stringify(example.data,null,2);$('#parameter-input').value=raw;importData(raw,'example');});
  $('#review-form').addEventListener('submit',e=>e.preventDefault());
  $('#review-form').addEventListener('input',markDirty);
  $('#review-form').addEventListener('click',e=>{
@@ -118,14 +121,15 @@
  });
  $('#generate-result').addEventListener('click',generate);
  $('#back-import').addEventListener('click',()=>{state.draft=readReview();show('start');});
- $('#edit-result').addEventListener('click',()=>{renderReview();show('review');});
+ $('#edit-result').addEventListener('click',()=>{track('diagnosis_edit',{input_origin:origin()});renderReview();show('review');});
  $('#back-start').addEventListener('click',()=>show('start'));
  $('#basis-buttons').addEventListener('click',e=>{const b=e.target.closest('[data-basis]');if(b)focusBasis(b.dataset.basis);});
  $('#poster-frame').addEventListener('click',e=>{const b=e.target.closest('[data-poster-asset]');if(b)focusBasis(b.dataset.posterAsset);});
- $('#download-parameters').addEventListener('click',()=>download(new Blob([JSON.stringify(state.result.data,null,2)],{type:'application/json;charset=utf-8'}),safeName(state.result.data.subject.name)+'-经营参数.json'));
+ $('#download-parameters').addEventListener('click',()=>{download(new Blob([JSON.stringify(state.result.data,null,2)],{type:'application/json;charset=utf-8'}),safeName(state.result.data.subject.name)+'-经营参数.json');track('parameters_download',{input_origin:origin()});});
+ $('#download-image').addEventListener('click',()=>track('result_image_download',{input_origin:origin()}));
  $('#export-png').addEventListener('click',exportImage);
  $('#close-image').addEventListener('click',()=>$('#image-dialog').close());
- $('#native-share').addEventListener('click',async()=>{try{await navigator.share({files:[new File([state.png],$('#download-image').download,{type:'image/png'})],title:state.result.data.subject.name+'的AI经营画像'});}catch(e){if(e.name!=='AbortError')status('此设备暂不能直接分享，请下载图片后发送。');}});
+ $('#native-share').addEventListener('click',async()=>{try{await navigator.share({files:[new File([state.png],$('#download-image').download,{type:'image/png'})],title:state.result.data.subject.name+'的AI经营画像'});track('share',{method:'native',content_type:'diagnosis_image',input_origin:origin(),status:'success'});}catch(e){track('share',{method:'native',content_type:'diagnosis_image',input_origin:origin(),status:e.name==='AbortError'?'cancelled':'failure'});if(e.name!=='AbortError')status('此设备暂不能直接分享，请下载图片后发送。');}});
  let previousWidth=0;new ResizeObserver(()=>{const w=$('#poster-frame').clientWidth;if(w!==previousWidth){previousWidth=w;drawPoster();}}).observe($('#poster-frame'));
  show('start',false);
 })();
