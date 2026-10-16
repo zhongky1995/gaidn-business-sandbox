@@ -17,12 +17,12 @@
       <button type="button" data-step="result" disabled><span>03</span>生成诊断</button>
     </nav>
     <section id="start-view" aria-labelledby="start-title">
-      <header class="intro"><p class="eyebrow">从你已经拥有的东西出发</p><h1 id="start-title">你的拿手经验，<br>怎样成为团队的能力？</h1><p>选一项真实工作，看看已经拥有的经验，<br class="desktop-only">怎样留下来、用起来，并找到适合你的推进方式。</p></header>
+      <header class="intro"><p class="eyebrow">从你已经拥有的东西出发</p><h1 id="start-title">你的拿手本事，<br>怎样让 AI 帮上忙？</h1><p>从一个实际例子出发，找出值得放大的优势，<br class="desktop-only">看看 AI 可以参与哪里，以及第一步怎么走。</p></header>
       <div class="start-grid">
         <section class="panel prompt-panel" aria-labelledby="prompt-title">
           <span class="section-number">第一步</span><h2 id="prompt-title">让常用 AI 帮你整理</h2>
           <p class="muted">把提示词发给你常用的大模型，介绍业务和一项想改善的工作。它会按需要补问，再给你一段可导入的参数。</p>
-          <div class="starter-questions"><p>你做什么业务，这次最想改善哪项工作？</p><p>这项工作有什么需要老手判断的地方？</p></div>
+          <div class="starter-questions"><p>你做什么业务，这次最想改善哪项工作？</p><p>哪项已有经验，值得让更多次业务用得上？</p></div>
           <div class="actions"><button type="button" id="copy-skill" class="primary">复制完整提示词</button><button type="button" id="download-skill" class="secondary">下载 SKILL.md</button></div>
           <p class="small muted">已有业务介绍、复盘或脱敏事例，可以一起发给AI，不必重新填写。</p>
           <details id="prompt-details"><summary>查看提示词</summary><textarea id="skill-preview" readonly aria-label="完整参数整理提示词" spellcheck="false"></textarea></details>
@@ -34,11 +34,11 @@
           <div id="import-errors" class="error-box" role="alert" hidden></div><button type="button" id="copy-repair" class="text-button" hidden>复制修正要求，交给大模型</button>
         </section>
       </div>
-      <section class="example-strip" aria-label="虚构经营案例"><div><strong>先看看会得到什么</strong><p>用不同状态的虚构企业，先看看你会得到什么。</p></div><div class="actions"><label class="sr-only" for="example-select">选择虚构案例</label><select id="example-select"></select><button type="button" id="load-example" class="secondary">使用示例</button></div></section>
-      <details class="method-note"><summary>这份诊断依据什么？</summary><p>方法参考老谭文章中的四档推进路径、L0–L5判断力成熟度与准则四要素。只观察本次选定的工作场景，不给整家公司评级。具体匹配、标题和曲线为GAIDN产品设计，不是经过企业样本验证的量表；曲线不预测营收或收益。</p></details>
+      <section class="example-strip" aria-label="虚构经营案例"><div><strong>先看看会得到什么</strong><p>六种机会结构、不同准备状态，先看一张结果。</p></div><div class="actions"><label class="sr-only" for="example-select">选择虚构案例</label><select id="example-select"></select><button type="button" id="load-example" class="secondary">使用示例</button></div></section>
+      <details class="method-note"><summary>这份诊断依据什么？</summary><p>先按实际事例识别六种优势放大方式，再参考老谭的六级状态与准则四要素判断起点，结合实际协作安排分工。六种机会结构、匹配与曲线为 GAIDN 产品设计；只看本次工作，不给全公司评级，曲线为条件情景，不预测日期或收益。</p></details>
     </section>
     <section id="review-view" aria-labelledby="review-title" hidden>
-      <header class="view-heading"><p class="eyebrow">把判断建立在准确的信息上</p><h1 id="review-title">先核对，再生成。</h1><p>重点看选定工作、实际事例和推进安排。已有资料由AI整理，细节按需要展开；明确“没有”或“未安排”也能继续。</p></header>
+      <header class="view-heading"><p class="eyebrow">把判断建立在准确的信息上</p><h1 id="review-title">先核对，再生成。</h1><p>重点看本次工作、已有例子和希望支持的对象。细节已由 AI 整理，按需展开修改；明确“没有”或“未安排”也能继续。</p></header>
       <form id="review-form" novalidate></form>
       <div id="review-errors" class="error-box" role="alert" hidden></div>
       <div class="review-actions"><button type="button" id="back-import" class="secondary">返回导入</button><button type="button" id="download-draft" class="secondary">保存参数草稿</button><button type="button" id="generate-result" class="primary">确认信息，生成画像</button></div>
@@ -49,12 +49,13 @@
     </section>
     <p id="app-status" class="status" role="status" aria-live="polite"></p>
   </main>
-  <footer class="site-footer"><span>GAIDN · 连接全球创造者，让 AI 创新惠及更多人</span><span>组织AI化探索工具 · v2.0.0</span><details class="method-note"><summary>访问统计说明</summary><p>本网站使用 Google Analytics 记录基础访问与操作事件，用于改善体验。统计仅包含操作步骤、是否成功，以及示例或自有资料的来源类别；企业名称、业务介绍、诊断参数和图片内容在本机处理。Google 标签可能使用浏览器标识和 Cookie 统计访问。</p></details></footer>
+  <footer class="site-footer"><span>GAIDN · 连接全球创造者，让 AI 创新惠及更多人</span><span>组织AI化探索工具 · v3.0.0</span><details class="method-note"><summary>访问统计说明</summary><p>本网站使用 Google Analytics 记录基础访问与操作事件，用于改善体验。统计仅包含操作步骤、是否成功，以及示例或自有资料的来源类别；企业名称、业务介绍、诊断参数和图片内容在本机处理。Google 标签可能使用浏览器标识和 Cookie 统计访问。</p></details></footer>
   <dialog id="image-dialog" aria-labelledby="image-title"><div class="dialog-heading"><h2 id="image-title">结果图片已生成</h2><button type="button" id="close-image" class="secondary">关闭</button></div><p class="muted small">点击下载；手机上也可长按图片保存，再分享给朋友。</p><div class="actions"><a id="download-image" class="primary" download>下载 PNG 图片</a><button type="button" id="native-share" class="secondary" hidden>分享图片</button></div><img id="export-image" alt="本次经营诊断结果图片"></dialog>
   <script id="analytics-config" type="application/json">/* ANALYTICS_CONFIG */</script>
   <script>/* APP_ANALYTICS */</script>
   <script id="skill-content" type="application/json">/* SKILL_CONTENT */</script>
   <script>/* APP_LEGACY */</script>
+  <script>/* APP_V2 */</script>
   <script>/* APP_MODEL */</script>
   <script>/* APP_EXAMPLES */</script>
   <script>/* APP_POSTER */</script>

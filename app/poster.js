@@ -26,41 +26,65 @@
     }
     return lines;
   }
-function poster(result,width=640,active=null){
- const w=Math.max(280,Math.round(width)),small=w<480,pad=small?20:34,inner=w-pad*2,cx=w/2;
- const p={bg:'#08131e',fg:'#eaf4fc',muted:'#a0b6c7',line:'#294051',ink:'#8adce7',core:'#163145',edge:'#4d748d',violet:'#bcaaf0'};
- const parts=[],hitTargets=[];let y=24;
- const add=s=>parts.push(s),line=(x1,y1,x2,y2,opacity=1)=>add(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${p.line}" opacity="${opacity}"/>`);
- const text=(s,x,top,size=14,color=p.fg,weight=400,anchor='start',maxWidth=inner,lineHeight=size*1.65)=>{const lines=wrap(s,maxWidth,size,weight);lines.forEach((s,i)=>add(`<text x="${x}" y="${top+size+i*lineHeight}" font-size="${size}" fill="${color}" font-weight="${weight}" text-anchor="${anchor}">${esc(s)}</text>`));return lines.length*lineHeight;};
- add(`<defs><radialGradient id="poster-halo"><stop offset="0" stop-color="#5a8aa4" stop-opacity=".38"/><stop offset="1" stop-color="#365b71" stop-opacity="0"/></radialGradient><radialGradient id="poster-core" cx="35%" cy="20%" r="85%"><stop offset="0" stop-color="#426d85"/><stop offset="1" stop-color="${p.core}"/></radialGradient><linearGradient id="curve-area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${p.ink}" stop-opacity=".17"/><stop offset="1" stop-color="${p.ink}" stop-opacity="0"/></linearGradient></defs>`);
- y+=text(result.data.subject.name,pad,y,small?16:19,p.fg,600,'start',inner-64)+5;text(result.data.is_example?'虚构示例':'组织画像',w-pad,25,11,p.muted,400,'end',64);
- y+=text(result.data.subject.business,pad,y,small?11:13,p.muted)+18;
- y+=text(result.headline.replace('，','，\n'),cx,y,small?21:29,p.fg,600,'middle',inner,small?32:43)+10;
- const graphTop=y,cy=graphTop+134,r=small?49:58,labelW=small?86:150;
- const positions=[{x:cx,y:graphTop+53,top:graphTop-1},{x:pad+inner*.19,y:graphTop+220,top:graphTop+238},{x:w-pad-inner*.19,y:graphTop+220,top:graphTop+238}];
- add(`<circle cx="${cx}" cy="${cy}" r="${r+61}" fill="url(#poster-halo)"/><ellipse cx="${cx}" cy="${cy}" rx="${Math.min(inner/2-4,r+62)}" ry="${r+25}" fill="none" stroke="${p.line}" transform="rotate(-27 ${cx} ${cy})"/><ellipse cx="${cx}" cy="${cy}" rx="${Math.min(inner/2-8,r+43)}" ry="${r+15}" fill="none" stroke="${p.line}" stroke-width=".6" opacity=".65" transform="rotate(30 ${cx} ${cy})"/>`);
- result.nodes.forEach((node,i)=>{const pos=positions[i],dx=pos.x-cx,dy=pos.y-cy,len=Math.hypot(dx,dy),color=active===i?p.violet:p.ink;add(`<path d="M ${cx+dx*r/len} ${cy+dy*r/len} Q ${cx+dx*.4+12} ${cy+dy*.78} ${pos.x} ${pos.y}" fill="none" stroke="${color}" stroke-width="1.3"/><circle cx="${pos.x}" cy="${pos.y}" r="13" fill="${color}" opacity=".08"/><circle cx="${pos.x}" cy="${pos.y}" r="6" fill="${p.core}" stroke="${color}"/><circle cx="${pos.x}" cy="${pos.y}" r="2.6" fill="${color}"/>`);const h=text(node.label,pos.x,pos.top,small?11.5:14,p.fg,550,'middle',labelW,small?18:21);text(node.action,pos.x,pos.top+h+1,10,p.muted,400,'middle',labelW,16);hitTargets.push({index:i,x:pos.x-labelW/2,y:Math.min(pos.top,pos.y-14),width:labelW,height:Math.abs(pos.top-pos.y)+h+25});});
- add(`<circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#poster-core)" stroke="${p.edge}"/><circle cx="${cx}" cy="${cy}" r="${r-6}" fill="none" stroke="${p.edge}" opacity=".35"/>`);
- text(result.stage===null?'先选一个起点':'首做积累',cx,cy-30,10,p.muted,400,'middle',r*2-10);
- text(result.data.focus.asset||'一项真实工作',cx,cy-9,small?14:17,p.fg,550,'middle',r*2-13,small?21:25);
- y=graphTop+305;
- y+=text(result.stageLabel+' → '+result.classification,pad,y,small?12:14,p.ink,500,'start',inner,small?21:24)+7;
- y+=text(result.explanation,pad,y,small?11:12,p.muted,400,'start',inner,small?20:22)+10;
- line(pad,y,w-pad,y);y+=15;
- y+=text('适合你的推进方式',pad,y,10,p.muted)+3;y+=text(result.route.name,pad,y,small?14:17,p.fg,550)+8;
- y+=text('先做这一件',pad,y,10,p.muted)+3;y+=text(result.next,pad,y,small?12:14,p.fg,400,'start',inner,small?21:24)+16;
- line(pad,y,w-pad,y);y+=16;
- const c=result.curve;y+=text(c.title,pad,y,small?16:19,p.fg,550)+3;y+=text('选定工作能力的释放节奏 · 条件情景',pad,y,10,p.muted)+3;
- const left=pad+28,right=w-pad-3,top=y+11,bottom=y+91;
- line(left,top,right,top,.5);line(left,bottom,right,bottom);text('更高',pad,top-7,10,p.muted);text('当前',pad,bottom-7,10,p.muted);
- let d='',prep='';for(let i=0;i<=80;i++){const t=i/80,point=(left+(right-left)*t)+' '+(bottom-(bottom-top-4)*M.curveValue(c.id,t,c.preparation));d+=(i?' L ':'M ')+point;if(t<=(c.id==='explore' ? .42 : c.preparation))prep+=(prep?' L ':'M ')+point;}
- add(`<path d="${d} L ${right} ${bottom} L ${left} ${bottom} Z" fill="url(#curve-area)"/><path d="${d}" fill="none" stroke="${p.ink}" stroke-width="2.2" stroke-linecap="round"${c.conditional?' stroke-dasharray="6 4"':''}/>`);if(c.conditional&&prep)add(`<path d="${prep}" fill="none" stroke="${p.ink}" stroke-width="2.2"/>`);
- text(c.phases[0],left,bottom+10,10,p.muted,400,'start',(right-left)/2);text(c.phases[1],right,bottom+10,10,p.muted,400,'end',(right-left)/2);y=bottom+38;
- y+=text(c.basis,pad,y,10,p.muted,400,'start',inner,17)+5;y+=text(c.condition,pad,y,10,p.muted,400,'start',inner,17)+10;
- y+=text(result.scopeNote+'曲线不预测日期、营收或增长率。',pad,y,10,p.muted,400,'start',inner,17)+13;
- line(pad,y,w-pad,y);y+=10;y+=text('GAIDN · 让经验留下来，让团队用起来',pad,y,small?10:11,p.muted)+3;y+=text('方法参考：老谭·准则工程；匹配与情景为GAIDN设计。',pad,y,9,p.muted,400,'start',inner,15)+10;
- const height=Math.ceil(y);const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${height}" viewBox="0 0 ${w} ${height}" role="img" aria-label="${esc(result.data.subject.name+'：'+result.headline)}" style="font-family:${esc(font)}"><title>${esc(result.classification)}</title><desc>${esc(result.stageLabel+'。'+result.explanation+' '+result.next+' 推进方式：'+result.route.name+'。情景走向：'+c.title+'。'+c.basis+' '+c.condition+' '+result.scopeNote)}</desc><rect x=".5" y=".5" width="${w-1}" height="${height-1}" rx="18" fill="${p.bg}" stroke="${p.line}"/>${parts.join('')}</svg>`;
- return {svg,width:w,height,hitTargets};
+function layoutGraph(result,small){
+ const ns=result.graph.nodes,kind=result.graph.kind,pos=ns.map(()=>({x:.5,y:.5})),ids=role=>ns.flatMap((n,i)=>n.role===role?[i]:[]),S=ids('source'),T=ids('target'),C=ids('asset')[0],A=ids('ai')[0];
+ const rows=(list,x)=>list.forEach((n,i)=>pos[n]={x,y:list.length===1?.43:.09+i*.72/(list.length-1)}),spread=(list,y)=>list.forEach((n,i)=>pos[n]={x:list.length===1?.5:.14+i*.72/(list.length-1),y});
+ if(kind==='explore'){S.forEach(n=>pos[n]={x:.15,y:.25});pos[A]={x:.5,y:.5};T.forEach(n=>pos[n]={x:.85,y:.75});}
+ if(kind==='knowledge'){spread(S,.02);pos[C]={x:.43,y:.38};pos[A]={x:.82,y:.4};spread(T,.81);}
+ if(kind==='process'){pos[C]={x:.5,y:.01};const order=[...S,A,...T],cols=small?3:4;order.forEach((n,i)=>{const row=Math.floor(i/cols),col=i%cols;pos[n]={x:.12+((row%2)?cols-1-col:col)*.76/(cols-1),y:.27+row*(small?.28:.48)};});}
+ if(kind==='expert'){rows(S,.08);pos[C]={x:.36,y:.43};pos[A]={x:.64,y:.43};rows(T,.92);}
+ if(kind==='project'){rows(S,.1);pos[C]={x:.47,y:.18};pos[A]={x:.47,y:.68};rows(T,.89);}
+ if(kind==='matching'){rows(S,.1);rows(T,.9);pos[C]={x:.5,y:.55};pos[A]={x:.5,y:.06};}
+ if(kind==='network'){const ring=[...S,...T];ring.forEach((n,i)=>{const a=-Math.PI/2+i*2*Math.PI/ring.length;pos[n]={x:.5+.4*Math.cos(a),y:.45+.43*Math.sin(a)};});pos[C]={x:.5,y:.62};pos[A]={x:.5,y:.32};}
+ return pos;
 }
-host.GAIDNPoster={poster,wrap};
-})(globalThis);
+function poster(result,width=640,active=null){
+ const w=Math.max(280,Math.round(width)),small=w<480,pad=small?20:34,inner=w-2*pad,cx=w/2;
+ const p={bg:'#08131e',fg:'#eaf4fc',muted:'#a0b6c7',line:'#294051',ink:'#8adce7',core:'#163145',edge:'#5c8299',violet:'#c6b5f2'},parts=[],hitTargets=[];let y=24;
+ const add=s=>parts.push(s),line=(x1,y1,x2,y2,op=1)=>add(`<path d="M ${x1} ${y1} L ${x2} ${y2}" fill="none" stroke="${p.line}" opacity="${op}"/>`);
+ const text=(s,x,top,size=14,color=p.fg,weight=400,anchor='start',maxWidth=inner,lh=size*1.65)=>{const rows=wrap(s,maxWidth,size,weight);rows.forEach((v,i)=>add(`<text x="${x}" y="${top+size+i*lh}" font-size="${size}" fill="${color}" font-weight="${weight}" text-anchor="${anchor}">${esc(v)}</text>`));return rows.length*lh;};
+ add(`<defs><radialGradient id="v3-halo"><stop offset="0" stop-color="${p.ink}" stop-opacity=".18"/><stop offset="1" stop-color="${p.ink}" stop-opacity="0"/></radialGradient><radialGradient id="v3-core" cx="30%" cy="20%"><stop offset="0" stop-color="#3e697e"/><stop offset="1" stop-color="${p.core}"/></radialGradient><linearGradient id="v3-area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${p.ink}" stop-opacity=".14"/><stop offset="1" stop-color="${p.ink}" stop-opacity="0"/></linearGradient><marker id="v3-arrow-new" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><path d="M0 0 L4 2.5 L0 5" fill="none" stroke="${p.ink}" stroke-width=".8"/></marker><marker id="v3-arrow-old" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><path d="M0 0 L4 2.5 L0 5" fill="none" stroke="${p.edge}" stroke-width=".8"/></marker></defs>`);
+ y+=text(result.data.subject.name,pad,y,small?16:19,p.fg,550,'start',inner-70);text(result.data.is_example?'虚构示例':'经营探索',w-pad,26,11,p.muted,400,'end',70);y+=5;
+ y+=text(result.data.subject.business,pad,y,small?11:13,p.muted)+22;
+ y+=text(result.headline.replace('，','，\n'),cx,y,small?22:30,p.fg,550,'middle',inner,small?34:45)+15;
+ y+=text(result.classification,cx,y,small?13:15,p.ink,500,'middle',inner)+3;
+ y+=text('当前起点：'+result.stageLabel,cx,y,11,p.muted,400,'middle',inner)+7;
+ const top=y,gh=small?415:335,positions=layoutGraph(result,small),points=positions.map(v=>({x:pad+inner*v.x,y:top+28+v.y*(gh-100)})),ns=result.graph.nodes;
+ add(`<g data-graph-kind="${esc(result.kind)}"><ellipse cx="${cx}" cy="${top+gh*.49}" rx="${inner*.5}" ry="${gh*.5}" fill="url(#v3-halo)"/>`);
+ if(result.kind==='knowledge')add(`<ellipse cx="${pad+inner*.43}" cy="${top+28+.38*(gh-100)}" rx="${inner*.34}" ry="${gh*.26}" fill="none" stroke="${p.line}" opacity=".65" transform="rotate(-19 ${cx} ${top+gh*.5})"/>`);
+ if(result.kind==='network')add(`<ellipse cx="${cx}" cy="${top+28+.45*(gh-100)}" rx="${inner*.4}" ry="${(gh-100)*.43}" fill="none" stroke="${p.line}" opacity=".55"/>`);
+ if(result.kind==='project')add(`<ellipse cx="${pad+inner*.47}" cy="${top+gh*.48}" rx="${inner*.23}" ry="${gh*.36}" fill="none" stroke="${p.line}" opacity=".5" transform="rotate(22 ${cx} ${top+gh*.5})"/>`);
+ result.graph.edges.forEach((e,i)=>{const a=points[e.from],b=points[e.to],dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy)||1,r1=ns[e.from].role==='asset'?22:12,r2=ns[e.to].role==='asset'?26:16,x1=a.x+dx*r1/len,y1=a.y+dy*r1/len,x2=b.x-dx*r2/len,y2=b.y-dy*r2/len;
+  const feedback=(result.kind==='knowledge'||result.kind==='project')&&ns[e.from].role==='target'&&ns[e.to].role==='asset',bend=feedback?(i%2?26:-26):result.kind==='matching'?(i%2?9:-9):0;
+  add(`<path data-relation="${e.planned?'proposed':'described'}" d="M ${x1} ${y1} Q ${(x1+x2)/2+bend} ${(y1+y2)/2-bend} ${x2} ${y2}" fill="none" stroke="${e.planned?p.ink:p.edge}" stroke-width="${e.planned?1.5:1.15}"${e.planned?' stroke-dasharray="4 5"':''} opacity="${e.planned?.85:.7}" marker-end="url(#${e.planned?'v3-arrow-new':'v3-arrow-old'})"/>`);
+ });
+ ns.forEach((node,i)=>{const pt=points[i],core=node.role==='asset',ai=node.role==='ai',r=core?23:ai?17:10,color=active===i?p.violet:node.state==='planned'?p.ink:p.edge;
+  if(core||ai)add(`<circle cx="${pt.x}" cy="${pt.y}" r="${r+22}" fill="url(#v3-halo)"/>`);
+  add(`<circle cx="${pt.x}" cy="${pt.y}" r="${r+5}" fill="none" stroke="${color}" opacity=".15"/><circle cx="${pt.x}" cy="${pt.y}" r="${r}" fill="${core?'url(#v3-core)':p.core}" stroke="${color}"${node.state==='planned'?' stroke-dasharray="3 3"':''}/><circle cx="${pt.x}" cy="${pt.y}" r="${core?4:2.5}" fill="${color}"/>`);
+  const mw=small?inner*(result.kind==='expert'?.22:.29):Math.min(140,inner*.22),h=text(node.label,pt.x,pt.y+r+8,small?11.5:13,p.fg,core?500:400,'middle',mw,small?17:20);
+  hitTargets.push({index:i,x:pt.x-mw/2,y:pt.y-r-4,width:mw,height:r*2+h+16});
+ });add('</g>');y=top+gh;
+ line(pad,y+6,pad+20,y+6);text('已有描述',pad+26,y-2,10,p.muted,400,'start',65);add(`<path d="M ${pad+110} ${y+6} H ${pad+130}" stroke="${p.ink}" stroke-dasharray="4 4"/>`);text('建议由AI支持的连接',pad+136,y-2,10,p.muted,400,'start',inner-136);y+=36;
+ y+=text(result.kind==='explore'?'这次先验证什么':'这项优势，值得怎样放大',pad,y,small?13:15,p.fg,500)+5;
+ y+=text(result.opportunityReason,pad,y,small?12:14,p.muted,400,'start',inner,small?21:25)+9;
+ y+=text(result.explanation,pad,y,small?11:12,p.muted,400,'start',inner,small?20:22)+15;
+ line(pad,y,w-pad,y);y+=16;
+ y+=text('先走这三步',pad,y,small?15:18,p.fg,500)+10;
+ result.milestones.forEach((m,i)=>{y+=text((i+1)+'  '+m.title,pad,y,small?12:14,p.ink,500)+2;y+=text(m.detail,pad+19,y,small?11:12,p.fg,400,'start',inner-19,small?20:22)+9;});
+ y+=text(result.route.name,pad,y,11,p.muted)+3;y+=text(result.data.readiness.owner.evidence,pad,y,11,p.muted,400,'start',inner,19)+14;
+ line(pad,y,w-pad,y);y+=16;
+ const c=result.curve;y+=text(c.title,pad,y,small?16:20,p.fg,500)+4;y+=text('本次工作能力的变化节奏 · 条件情景',pad,y,10,p.muted)+5;
+ const left=pad+15,right=w-pad-4,plotTop=y+14,bottom=y+112,pointsC=[];
+ line(left,plotTop,right,plotTop,.35);line(left,bottom,right,bottom);text('相对能力／可用范围',left,plotTop-5,10,p.muted,400,'start',right-left);
+ for(let i=0;i<=100;i++){const t=i/100;pointsC.push([left+(right-left)*t,bottom-(bottom-plotTop-16)*M.curveValue(c.id,t,c.preparation)]);}
+ const d=pointsC.map((v,i)=>(i?'L':'M')+v.map(x=>x.toFixed(2)).join(' ')).join(' ');add(`<path d="${d} L ${right} ${bottom} L ${left} ${bottom} Z" fill="url(#v3-area)"/><path data-curve-kind="${esc(c.id)}" d="${d}" fill="none" stroke="${p.ink}" stroke-width="2.2" stroke-dasharray="5 4" stroke-linecap="round"/>`);
+ const lw=(right-left)/3-6;let labelH=0;c.phases.forEach((label,i)=>{const anchor=i===0?'start':i===2?'end':'middle',x=i===0?left:i===2?right:(left+right)/2;labelH=Math.max(labelH,text(label,x,bottom+9,10,p.muted,400,anchor,lw,16));});y=bottom+labelH+24;
+ y+=text(c.basis,pad,y,10,p.muted,400,'start',inner,18)+4;if(c.id!=='delayed')y+=text(c.condition,pad,y,10,p.muted,400,'start',inner,18)+5;
+ y+=text('仅观察本次工作；曲线不预测日期、营收或增长率。',pad,y,10,p.muted,400,'start',inner,18)+11;
+ line(pad,y,w-pad,y);y+=12;y+=text('GAIDN · 让已有的本事，用到更多次业务里',pad,y,small?10:11,p.muted)+3;
+ y+=text('方法参考：老谭·准则工程；机会结构与情景匹配为GAIDN设计。',pad,y,9,p.muted,400,'start',inner,16)+12;
+ const height=Math.ceil(y),svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${height}" viewBox="0 0 ${w} ${height}" role="img" aria-label="${esc(result.data.subject.name+'：'+result.headline)}" style="font-family:${esc(font)}"><title>${esc(result.classification)}</title><desc>${esc(result.explanation+' '+result.next+' '+c.title+' '+c.basis)}</desc><rect x=".5" y=".5" width="${w-1}" height="${height-1}" rx="18" fill="${p.bg}" stroke="${p.line}"/>${parts.join('')}</svg>`;
+ return {svg,height,hitTargets};
+}
+const api={poster,layoutGraph,wrap};if(typeof module!=='undefined'&&module.exports)module.exports=api;else host.GAIDNPoster=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
