@@ -1,1 +1,182 @@
-(function(host){'use strict';const examples=[{"id":"knowledge","name":"拾木用品 · 资料共用 / 重复提效","data":{"schema_version":"4.0","is_example":true,"company":{"name":"拾木用品","business":"家庭收纳用品销售及售后"},"work":{"task":"准备售后处理建议","asset":"产品与售后说明","evidence":"售后团队反复处理安装与承重问题，已整理适用表面、处理步骤和例外。资料可查，客服主管人工调用AI准备建议并按清单复核，还没有AI工作流。"},"mechanism":"knowledge","sources":["安装说明","售后记录"],"targets":["售前咨询","售后答复"],"model":"fast","facts":{"experience":"repeated","standard":"ready","materials":"ready","review":"assigned","ai_use":"manual","repetition":"repeated"},"reviewer":"客服主管逐项核对适用表面、承重条件和处理步骤，合格后采用。","goal":"减少合格售后建议的准备工时"}},{"id":"process","name":"顺联仓配 · 任务接力 / 样板推广","data":{"schema_version":"4.0","is_example":true,"company":{"name":"顺联仓配","business":"为连锁门店提供仓储配送"},"work":{"task":"把已验收的出库交接样板推广到新仓","asset":"出库交接标准","evidence":"A仓已按出库标准完成一次AI缺项检查试点，仓储主管检查记录后验收。标准资料齐备，接下来逐个仓库试用验收，不把新仓直接视为成功。"},"mechanism":"process","sources":["订单校对","备货确认"],"targets":["出库复核","承运接手"],"model":"staged","facts":{"experience":"repeated","standard":"ready","materials":"ready","review":"assigned","pilot":"verified","rollout":"phased"},"reviewer":"各仓主管按出库清单逐项验收交接记录，未通过场景不计入推广完成。","goal":"增加通过交接试用验收的仓库场景"}},{"id":"expert","name":"启衡设备 · 经验传承 / 沉淀复用","data":{"schema_version":"4.0","is_example":true,"company":{"name":"启衡设备","business":"工业设备故障排查与维修"},"work":{"task":"为新人准备故障排查依据","asset":"老师傅排障经验","evidence":"老师傅多次依据噪声、负载与现场现象排查设备，但取舍主要口头传授，记录散落在工单中；将由维修主管复核，初期需要访谈和整理时间。"},"mechanism":"expert","sources":["维修老师傅","历史工单"],"targets":["新人排障","异地技术员"],"model":"delayed","facts":{"experience":"repeated","standard":"none","materials":"scattered","review":"assigned"},"reviewer":"维修主管核对现场适用条件与排除项；涉及安全的操作由合资格人员决定。","goal":"让同类排障的总准备工时在复用后下降"}},{"id":"project","name":"泊远软件 · 项目复用 / 持续纠错","data":{"schema_version":"4.0","is_example":true,"company":{"name":"泊远软件","business":"为零售企业开发业务系统"},"work":{"task":"减少旧模块带入新方案后的返工","asset":"门店权限模块","evidence":"两个项目已复用门店权限模块，AI工作流会准备候选方案。上次把跨店权限误用到单店场景，负责人修订了适用条件并保存错误记录，本次继续检查同类错误。"},"mechanism":"project","sources":["A连锁项目","B门店项目"],"targets":["C品牌方案","D门店升级"],"model":"gradual","facts":{"experience":"repeated","standard":"ready","ai_use":"workflow","correction":"yes","review":"assigned","reuse":"verified"},"reviewer":"技术负责人核对权限边界和验收项，记录不合格方案的返工及原因。","goal":"减少同等方案数量中的返工次数"}},{"id":"matching","name":"禾桥供应链 · 资源匹配 / 持续纠错","data":{"schema_version":"4.0","is_example":true,"company":{"name":"禾桥供应链","business":"撮合餐饮客户与食材供给"},"work":{"task":"减少不适配候选被退回重配","asset":"供需筛选条件","evidence":"团队人工调用AI按冷链与起订量筛选，已发生把常温配送推荐给冷链需求的错误；采购负责人留下修订记录，本次按相同合格标准继续检查，双方确认后才成立交易。"},"mechanism":"matching","sources":["冷链配送需求","小批量采购"],"targets":["有冷链的供给","低起订量供给"],"model":"gradual","facts":{"experience":"repeated","standard":"ready","ai_use":"manual","correction":"yes","review":"assigned"},"reviewer":"采购负责人核对配送、起订量和时效，记录退回重配，最终由供需双方确认。","goal":"减少同等需求数量中的退回重配次数"}},{"id":"network","name":"澄川连锁 · 协作联动 / 样板推广","data":{"schema_version":"4.0","is_example":true,"company":{"name":"澄川连锁","business":"连锁门店的开店与运营协作"},"work":{"task":"把区域开店协作样板逐区推广","asset":"开店共同要求","evidence":"A区按共同要求完成一次AI交接缺项检查试点，区域负责人已对交付物与各方确认记录验收。总部计划逐区推广，每个新区域单独复核条件。"},"mechanism":"network","sources":["总部·提供物料","区域商·协调到货"],"targets":["店长·确认场地","班组·安装验收"],"model":"staged","facts":{"experience":"repeated","standard":"ready","materials":"ready","review":"assigned","pilot":"verified","rollout":"phased"},"reviewer":"区域负责人检查物料、场地和安装交接记录，各方确认后才计为通过。","goal":"增加通过试用验收的区域开店场景"}},{"id":"explore","name":"初行工作室 · 暂无积累 / 先验证","data":{"schema_version":"4.0","is_example":true,"company":{"name":"初行工作室","business":"面向企业准备培训活动"},"work":{"task":"准备第一次培训需求摘要","asset":"","evidence":"经营者尚未完成同类活动，没有可复用经验，准备先用一次真实需求检验AI整理结果。"},"mechanism":"explore","sources":[],"targets":[],"model":"explore","facts":{"experience":"none","review":"none"},"reviewer":"","goal":"先完成一份可检查的真实需求摘要"}},{"id":"solo","name":"一人咨询 · 经验传承 / 沉淀复用","data":{"schema_version":"4.0","is_example":true,"company":{"name":"观川咨询","business":"为小企业提供经营咨询"},"work":{"task":"准备下一次报价的判断依据","asset":"咨询报价取舍","evidence":"经营者做过多个咨询项目，但为什么增加访谈或压缩范围尚未写下来；有旧报价文件，准备先整理一次，由经营者本人对照边界复核。"},"mechanism":"expert","sources":["经营者经验"],"targets":["下一次报价"],"model":"delayed","facts":{"experience":"repeated","standard":"partial","materials":"scattered","review":"assigned"},"reviewer":"经营者本人对照服务边界、工作量与交付项检查，记录差异。","goal":"观察同类报价的总准备工时"}},{"id":"knowledge-prepare","name":"拾木用品 · 同一关系 / 先沉淀","data":{"schema_version":"4.0","is_example":true,"company":{"name":"拾木用品","business":"家庭收纳用品销售及售后"},"work":{"task":"整理产品使用说明","asset":"产品使用经验","evidence":"团队处理过多次安装问题，但说明散在不同服务记录中，适用边界还未统一，也尚未安排复核，准备先把已有事例整理出来。"},"mechanism":"knowledge","sources":["服务记录"],"targets":["售前答疑","售后答复"],"model":"delayed","facts":{"experience":"repeated","standard":"partial","materials":"scattered","review":"none"},"reviewer":"","goal":"减少后续同类答复的总工时"}}];if(typeof module!=='undefined'&&module.exports)module.exports=examples;else host.GAIDNExamples=examples;})(typeof globalThis!=='undefined'?globalThis:this);
+(function(h){const e=[
+  {
+    "id": "knowledge",
+    "name": "拾木家居 · 知识资产优势",
+    "data": {
+      "schema_version": "5.0",
+      "is_example": true,
+      "company": {
+        "business": "自有家居用品品牌",
+        "customers": "家庭用户",
+        "income": "产品销售与配套服务",
+        "name": "拾木家居"
+      },
+      "mechanism": "knowledge",
+      "assets": [
+        "产品理解",
+        "用户问题",
+        "渠道触点"
+      ],
+      "evidence": "虚构家居品牌面向家庭用户，以自有产品销售和配套服务获得收入。\n产品团队熟悉适用场景和安装边界，已把常见问题整理成说明，资料可查。\n多个渠道仍各自准备产品内容和答复；AI目前主要用于零散初稿。",
+      "readiness": "usable",
+      "rationale": "产品依据已相对齐备，重复整理分散在多个经营触点，因此优先考虑把现有积累组织成共用资产；快速释放只是条件情景，不是已测得的提效。",
+      "headline": [
+        "把产品卖好的本事，",
+        "复制给更多经营触点。"
+      ],
+      "diagnosis": "产品理解、用户反馈和渠道触点已经形成积累。优先把这份理解变成共同依据，让售前、内容与服务共同受益。",
+      "priority": "把产品经验组织成全渠道共用的知识资产",
+      "first": "先整理一组高频产品问题，验证不同渠道能否共用。"
+    }
+  },
+  {
+    "id": "process",
+    "name": "青禾精工 · 流程运营优势",
+    "data": {
+      "schema_version": "5.0",
+      "is_example": true,
+      "company": {
+        "business": "精密配件的小批量制造",
+        "customers": "设备与品牌客户",
+        "income": "订单制造与长期配套",
+        "name": "青禾精工"
+      },
+      "mechanism": "process",
+      "assets": [
+        "交付标准",
+        "订单组织",
+        "异常经验"
+      ],
+      "evidence": "虚构制造企业向设备与品牌客户提供精密配件，以订单制造和长期配套获得收入。\n设备仍有可用余量；当前波动主要来自报价、排产和异常沟通，而非假定AI能增加设备极限产能。\n成熟交付标准与异常记录可用，团队已经人工调用AI，已有纠正记录。",
+      "readiness": "learning",
+      "rationale": "改善机会来自跨经营环节持续减少协调损耗，匹配渐进积累的情景；如果设备满负荷或需求不足，不能按此推导额外经营产出。",
+      "headline": [
+        "把每次交付做稳，",
+        "才接得住更多订单。"
+      ],
+      "diagnosis": "稳定做法已经存在，报价、排产与异常协调仍有反复。优先把标准和反馈贯通，让交付能力随着改进持续积累。",
+      "priority": "让成熟交付方法成为跨环节共用的经营依据",
+      "first": "先选一类常见订单，核对跨环节是否使用同一份依据。"
+    }
+  },
+  {
+    "id": "expert",
+    "name": "启衡设备 · 专家经验优势",
+    "data": {
+      "schema_version": "5.0",
+      "is_example": true,
+      "company": {
+        "business": "工业设备维修与技术服务",
+        "customers": "工厂与设备运营方",
+        "income": "技术服务与维护合约",
+        "name": "启衡设备"
+      },
+      "mechanism": "expert",
+      "assets": [
+        "专业判断",
+        "设备历史",
+        "客户信任"
+      ],
+      "evidence": "虚构设备服务企业面向工厂与设备运营方，以技术服务和维护合约获得收入。\n老师傅有多次故障判断经验，设备工单和历史资料已保留，但判断条件尚未系统整理。\n老手需要支援多个客户；初期将投入经验整理和人工复核。AI不代替现场合资格操作。",
+      "readiness": "building",
+      "rationale": "核心积累真实存在但尚未组织化，先整理再复用的条件更突出，匹配蓄势跃迁；这不表示现场维修可以全部自动化。",
+      "headline": [
+        "把老师傅的判断，",
+        "变成整家公司的服务能力。"
+      ],
+      "diagnosis": "专业判断支撑服务质量，也集中在少数老手身上。优先把经验与设备资料组织起来，为团队扩大服务能力打基础。",
+      "priority": "把关键判断沉淀为团队可调用的经验体系",
+      "first": "先把一类常见故障的判断依据与例外讲清楚。"
+    }
+  },
+  {
+    "id": "project",
+    "name": "泊远软件 · 项目资产优势",
+    "data": {
+      "schema_version": "5.0",
+      "is_example": true,
+      "company": {
+        "business": "零售企业的业务系统服务",
+        "customers": "品牌与连锁企业",
+        "income": "项目交付与持续维护",
+        "name": "泊远软件"
+      },
+      "mechanism": "project",
+      "assets": [
+        "模块资产",
+        "行业场景",
+        "项目方法"
+      ],
+      "evidence": "虚构软件企业向品牌与连锁企业提供零售业务系统，收入来自项目交付和持续维护。\n已在多个项目复用成熟模块，并保存适用条件、接口约定和验收记录。\n现有团队仍手工查找旧资料、重复准备基础方案，尚未把检索与复用串成稳定AI应用；新需求和验收仍由负责人判断。",
+      "readiness": "usable",
+      "rationale": "已有可复用资产与边界，主要机会是减少重复准备并把成熟能力带入更多项目；因此和知识资产企业可以共用快速释放模板。",
+      "headline": [
+        "做过的项目，",
+        "还能继续为新生意出力。"
+      ],
+      "diagnosis": "行业场景和成熟模块已经积累，重复准备仍占用团队精力。优先让已有成果进入更多新项目，释放可复用的交付能力。",
+      "priority": "把成熟项目积累变成可检索、可组合的交付资产",
+      "first": "先选一组成熟模块，核对新项目的适用边界。"
+    }
+  },
+  {
+    "id": "matching",
+    "name": "禾桥供应链 · 资源连接优势",
+    "data": {
+      "schema_version": "5.0",
+      "is_example": true,
+      "company": {
+        "business": "餐饮需求与食材供给连接",
+        "customers": "餐饮客户与食材供给方",
+        "income": "撮合服务与履约协调",
+        "name": "禾桥供应链"
+      },
+      "mechanism": "matching",
+      "assets": [
+        "适配判断",
+        "需求理解",
+        "供给网络"
+      ],
+      "evidence": "虚构供应链企业连接餐饮需求与食材供给，收入来自撮合服务和履约协调。\n已有可核实的供需资料和真实履约反馈，团队已在人工核对下使用AI筛选候选并记录纠正。\n资源不是自动成交；仍需要双方确认、供给可用性与履约检查，不假定AI创造了新的需求。",
+      "readiness": "learning",
+      "rationale": "资源两端已存在，经营机会来自持续校准适配依据和提高同等团队的处理能力，因此采用稳步增益模板。",
+      "headline": [
+        "资源多是一种积累，",
+        "配得准才是经营能力。"
+      ],
+      "diagnosis": "两端资源已经积累，匹配质量依赖条件判断和履约反馈。优先让每次连接留下依据，逐步提高团队处理业务的能力。",
+      "priority": "把需求、供给与履约反馈组织成可持续更新的依据",
+      "first": "先用一组真实供需，记录适配条件与排除原因。"
+    }
+  },
+  {
+    "id": "network",
+    "name": "澄川连锁 · 协作网络优势",
+    "data": {
+      "schema_version": "5.0",
+      "is_example": true,
+      "company": {
+        "business": "连锁品牌的门店经营与协作",
+        "customers": "门店与区域合作伙伴",
+        "income": "商品销售与运营服务",
+        "name": "澄川连锁"
+      },
+      "mechanism": "network",
+      "assets": [
+        "品牌方法",
+        "区域伙伴",
+        "终端反馈"
+      ],
+      "evidence": "虚构连锁品牌通过门店商品销售与运营服务获得收入，已有区域伙伴和终端经营网络。\n一个区域的运营做法已有完整记录、使用反馈和人工检查，其他区域条件不同，尚未视为成功复制。\nAI目前用于部分经营资料整理，计划逐段连接总部方法、区域执行和终端反馈。",
+      "readiness": "connecting",
+      "rationale": "优势分布在多个参与者之间，需要关键连接逐段成立，匹配协同放大情景；曲线上升表示承接能力有机会改善，不是门店数或利润保证。",
+      "headline": [
+        "让一家店的好做法，",
+        "成为一张网络的本事。"
+      ],
+      "diagnosis": "品牌、伙伴和终端已形成网络，协作仍依赖逐次沟通。优先连接各方依据，让成熟做法具备跨区域复用的条件。",
+      "priority": "让总部方法、区域协作与门店反馈形成共同经营依据",
+      "first": "先选一个区域，检查方法、执行与反馈能否接起来。"
+    }
+  }
+];if(typeof module!=="undefined"&&module.exports)module.exports=e;else h.GAIDNExamples=e;})(globalThis);
