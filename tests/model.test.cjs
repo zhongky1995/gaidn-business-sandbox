@@ -1,50 +1,22 @@
-const {test}=require('node:test');
-const assert=require('node:assert/strict');
-const M=require('../app/model.js'),examples=require('../app/examples.js');
-const sample=id=>M.clone(examples.find(e=>e.id===id).data);
-for(const [example,type,curve] of [['product','T1','fast'],['service','T2','linear'],['advice','T3','delayed'],['project','T4','delayed'],['matching','T5','fast'],['network','T6','linear']]){
- test(example+'：按经营事实识别类型与变化机制',()=>{const r=M.diagnose(sample(example));assert.deepEqual(r.ids,[type]);assert.equal(r.curve.id,curve);assert.equal(r.conflicts.length,0);});
-}
-test('未知事实保留未知，交付前提示必需问题并提供探索路线',()=>{const r=M.diagnose(sample('unknown'));assert.deepEqual(r.ids,[]);assert.equal(r.complete,false);assert.equal(r.curve.id,'explore');assert.ok(r.required.length);assert.equal(r.assets.length,0);assert.equal(r.headlineReady,false);});
-test('组合业务保留两种逻辑，无构成百分比',()=>{const r=M.diagnose(sample('mixed'));assert.deepEqual(r.ids,['T3','T4']);assert.equal(r.complete,true);assert.equal('score' in r,false);});
-test('行业、公司名或订阅收费不能覆盖经营事实',()=>{const d=sample('product');d.subject.name='AI平台顾问会员网络';d.subject.business='按月收取费用提供标准模板';assert.deepEqual(M.diagnose(d).ids,['T1']);});
-test('供给名单不把定制交付变成撮合',()=>{const d=sample('project');d.subject.business='有很多合作供应商的定制项目公司';assert.deepEqual(M.diagnose(d).ids,['T4']);});
-test('只改尺寸的明确方法不能硬归定制项目',()=>{const d=sample('project');d.business_modes[0].delivery_method={value:'repeatable',evidence:'只按既定款式改尺寸'};assert.ok(M.diagnose(d).conflicts.length);});
-test('交换角色与购买结果矛盾时阻止确定结论',()=>{const d=sample('matching');d.business_modes[0].exchange_role={value:'not_core',evidence:'只由公司单向交付'};assert.ok(M.diagnose(d).conflicts.length);assert.equal(M.diagnose(d).curve,null);});
-test('同一类型随资料条件变化，建议与曲线改变',()=>{const d=sample('project');d.readiness.materials={value:'none',evidence:'没有留下相关资料'};const r=M.diagnose(d);assert.deepEqual(r.ids,['T4']);assert.equal(r.stage,'record');assert.equal(r.curve.id,'delayed');assert.ok(r.curve.preparation>0);assert.ok(r.assets.every(a=>a.preparation==='先记录经验'));assert.match(r.next,/先把.*记录成一个可核对的样例/);});
-for(const value of ['none','unknown'])test('复核尚未落实时保留路线，未知在交付前确认：'+value,()=>{const d=sample('product');d.readiness.owner={value,evidence:value==='none'?'没有安排复核人员':''};const r=M.diagnose(d);assert.equal(r.curve.id,'fast');assert.ok(r.curve.conditional&&r.curve.preparation>0);assert.equal(r.required.some(q=>q.path==='readiness.owner'),value==='unknown');assert.deepEqual(r.data.readiness.owner,d.readiness.owner);});
-test('只有未整理的经验，不当作可直接供AI检索的材料',()=>{const d=sample('project');d.assets[0].status='experience_only';const r=M.diagnose(d);assert.equal(r.stage,'record');assert.equal(r.curve.id,'delayed');assert.ok(r.curve.preparation>0);});
-test('无积累不因类型自动填优势或金句',()=>{const d=sample('project');d.assets=[];d.focus_asset=null;const r=M.diagnose(d);assert.deepEqual(r.ids,['T4']);assert.equal(r.assets.length,0);assert.equal(r.curve.id,'delayed');assert.ok(r.curve.conditional);assert.equal(r.headlineReady,false);});
-test('单人经营的建议不虚构团队',()=>{const r=M.diagnose(sample('advice'));assert.ok(r.next.includes('由你核对'));assert.ok(!r.next.includes('团队'));});
-test('一组事实未知时，保留已识别类型及待补充状态',()=>{const d=sample('mixed');d.business_modes[1].customer_result={value:'unknown',evidence:''};const r=M.diagnose(d);assert.deepEqual(r.ids,['T3']);assert.equal(r.complete,false);assert.equal(r.curve.id,'delayed');assert.ok(r.required.length);});
-test('接受单个JSON代码框，但拒绝多个候选参数',()=>{const raw=JSON.stringify(sample('project'));assert.equal(M.parse('这是参数\n```json\n'+raw+'\n```').subject.name,'远序软件');assert.throws(()=>M.parse('```json\n'+raw+'\n```\n```json\n'+raw+'\n```'),M.InputError);});
-for(const [name,mutate] of [
- ['错误版本',d=>d.schema_version='2.0'],['越界首做项',d=>d.focus_asset=4],['伪造附加评分',d=>d.score=99],['已知值缺少依据',d=>d.readiness.owner.evidence=''],['错误枚举',d=>d.assets[0].kind='toString'],['重复积累',d=>d.assets[1].kind=d.assets[0].kind],['名称过长',d=>d.subject.name='长'.repeat(41)],['空名称',d=>d.subject.name=' '],['错误示例标记',d=>d.is_example='false']
-])test('参数校验：'+name,()=>{const d=sample('project');mutate(d);assert.throws(()=>M.validate(d),M.InputError);});
-test('三种示意曲线有相同端点且保持有限、单调',()=>{for(const id of ['fast','linear','delayed']){assert.equal(M.curveValue(id,0),0);assert.equal(M.curveValue(id,1),1);let prev=0;for(let i=0;i<=100;i++){const v=M.curveValue(id,i/100);assert.ok(Number.isFinite(v)&&v>=prev&&v<=1);prev=v;}}});
-test('改变首做积累只改变机会表达，不改变经营类型',()=>{const d=sample('project');d.focus_asset=1;const r=M.diagnose(d);assert.deepEqual(r.ids,['T4']);assert.ok(r.next.includes('比对相似客户'));});
-
-test('旧参数可导入，必需未知先确认；明确否定可生成準备路线',()=>{
- const d=sample('project');for(const k of Object.keys(d.readiness))d.readiness[k]={value:'unknown',evidence:''};
- const imported=M.parse(JSON.stringify(d));assert.deepEqual(M.requiredQuestions(imported).map(q=>q.path),['readiness.materials','readiness.owner']);
- imported.readiness.materials={value:'none',evidence:'尚未留存可用于当前任务的资料'};imported.readiness.owner={value:'none',evidence:'尚未安排维护和复核负责人'};
- const r=M.diagnose(imported);assert.deepEqual(r.required,[]);assert.equal(r.curve.id,'delayed');assert.equal(r.curve.source,'type');assert.ok(r.curve.conditional&&r.curve.preparation>0);assert.equal(r.data.readiness.rollout.value,'unknown');
-});
-test('六种类型在所有起步条件组合下都有匹配机制，未知事实不被修改',()=>{
- const keys=['materials','owner','standard_task','repeated_need','reuse_basis','rollout'];
- const choices=[['ready','scattered','none','unknown'],['assigned','none','unknown'],['yes','no','unknown'],['yes','no','unknown'],['yes','no','unknown'],['single_task','phased','unknown']];
- for(const example of ['product','service','advice','project','matching','network']){
-  const walk=(index,d)=>{if(index===keys.length){const r=M.diagnose(d);assert.ok(r.curve,example+JSON.stringify(d.readiness));assert.ok(['fast','linear','delayed'].includes(r.curve.id));assert.deepEqual(r.data,d);return;}
-   for(const value of choices[index]){d.readiness[keys[index]]={value,evidence:value==='unknown'?'':'虚构测试中已确认该条件'};walk(index+1,d);}};
-  walk(0,sample(example));
- }
-});
-test('准备期保持平稳，再进入条件性情景；路径有限且不反向',()=>{
- for(const id of ['fast','linear','delayed']){for(const preparation of [.2,.32]){assert.equal(M.curveValue(id,preparation,preparation),0);assert.equal(M.curveValue(id,1,preparation),1);let last=0;for(let i=0;i<=100;i++){const v=M.curveValue(id,i/100,preparation);assert.ok(Number.isFinite(v)&&v>=last&&v<=1);last=v;}}}
- assert.equal(M.curveValue('explore',0),0);assert.ok(M.curveValue('explore',1)<1);
-});
-test('已知必需字段没有依据时在核对阶段显示问题',()=>{const d=sample('project');d.readiness.owner.evidence='';assert.ok(M.requiredQuestions(d).some(q=>q.path==='readiness.owner'));});
-test('内嵌提示词的格式示例满足必需交付检查',()=>{
- const fs=require('node:fs'),path=require('node:path');const skill=fs.readFileSync(path.join(__dirname,'../app/skill.txt'),'utf8');const match=skill.match(/```json\s*\n([\s\S]*?)```/);assert.ok(match);
- const d=M.parse(match[1]);assert.equal(d.is_example,true);assert.deepEqual(M.requiredQuestions(d),[]);assert.ok(M.diagnose(d).curve);
-});
+const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs');
+const M=require('../app/model.js'),examples=require('../app/examples.js'),oldExamples=require('./legacy-examples.cjs');
+const sample=id=>M.clone(examples.find(e=>e.id===id).data),set=(d,g,k,value,evidence='虚构例子中已经确认此项事实')=>{d[g][k]={value,evidence:value==='unknown'?'':evidence};};
+for(const [id,stage,route,curve] of [['memory',0,'direct','delayed'],['project',1,'lighthouse','delayed'],['rule',2,'direct','fast'],['call',3,'lighthouse','linear'],['loop',4,'hub','linear'],['inherit',5,'portfolio','linear'],['explore',null,'direct','explore'],['tools',0,'lighthouse','delayed']])test(id+'：单场景状态、推进与曲线独立匹配',()=>{const d=sample(id),r=M.diagnose(d);assert.equal(r.stage,stage);assert.equal(r.route.id,route);assert.equal(r.curve.id,curve);assert.deepEqual(r.required,[]);assert.deepEqual(r.data,d);});
+test('企业规模不会抬高或降低场景成熟度；本次推进按真实协作单元',()=>{const d=sample('memory');d.subject.size_band='large';d.subject.headcount='约8000人';set(d,'organization','coordination','team');const r=M.diagnose(d);assert.equal(r.stage,0);assert.equal(r.route.id,'lighthouse');const small=sample('call');small.subject.size_band='micro';assert.equal(M.diagnose(small).stage,3);});
+test('人工交准则给AI不等于真实工作流自动调用',()=>{const d=sample('rule');assert.equal(M.diagnose(d).stage,2);set(d,'practice','ai_use','auto_untraced');assert.equal(M.diagnose(d).stage,2);assert.ok(M.diagnose(d).gaps.length);});
+test('工具已接入但没有明确准则，只保留使用事实并要求先校准',()=>{const d=sample('tools');set(d,'practice','ai_use','auto_traced');const r=M.diagnose(d);assert.equal(r.stage,0);assert.ok(r.gaps.length);assert.match(r.curve.title,/校准/);});
+test('四要素必须全部具备，81种组合不会把缺项当作完整准则',()=>{const keys=Object.keys(M.GUIDELINE_LABELS);let n=0;function walk(i,d){if(i===keys.length){n++;const r=M.diagnose(d),full=keys.every(k=>d.memory.guideline[k].value==='yes');assert.equal(r.ruleComplete,full);assert.equal(r.stage,full?5:1);if(keys.some(k=>d.memory.guideline[k].value==='unknown'))assert.ok(r.required.length);return;}for(const v of ['yes','no','unknown']){d.memory.guideline[keys[i]]={value:v,evidence:v==='unknown'?'':'虚构材料已核对此项'};walk(i+1,d);}}walk(0,sample('inherit'));assert.equal(n,81);});
+test('有抽查或反馈不等于闭环；当前无人负责时不宣称持续修订',()=>{const d=sample('call');set(d,'practice','feedback','partial');assert.equal(M.diagnose(d).stage,3);set(d,'practice','feedback','closed');assert.equal(M.diagnose(d).stage,4);set(d,'readiness','owner','none');const r=M.diagnose(d);assert.equal(r.stage,3);assert.ok(r.gaps.length);assert.ok(r.curve.preparation>0);});
+test('多场景尝试不等于L5，L5只显示本次线索而不认证全公司',()=>{const d=sample('inherit');assert.match(M.diagnose(d).scopeNote,/不是全公司L5认证/);set(d,'practice','inheritance','multi');assert.equal(M.diagnose(d).stage,4);});
+test('单次事例只生成待核对线索，不包装为稳定优势',()=>{const d=sample('project');set(d,'focus','experience','one_case');const r=M.diagnose(d);assert.match(r.headline,/这次经验/);assert.match(r.explanation,/线索/);assert.match(r.curve.condition,/同类情境/);});
+test('明确暂无积累可生成探索路线，未回答不被当作没有',()=>{const d=sample('explore'),r=M.diagnose(d);assert.equal(r.stage,null);assert.equal(r.complete,true);set(d,'focus','experience','unknown','');const pending=M.diagnose(d);assert.equal(pending.stage,null);assert.equal(pending.complete,false);assert.ok(pending.required.some(q=>q.path==='focus.experience'));});
+test('已确认无资料无负责人无检查方法仍有准备路线，未知必需项在生成前补问',()=>{const d=sample('project');for(const k of ['materials','owner','review'])set(d,'readiness',k,'none');const r=M.diagnose(d);assert.equal(r.complete,true);assert.equal(r.curve.conditional,true);assert.ok(r.curve.preparation>0);for(const k of ['materials','owner','review'])set(d,'readiness',k,'unknown');assert.equal(M.requiredQuestions(d).filter(q=>q.path.startsWith('readiness.')).length,3);});
+test('既有文档无法直接代表准则；准则unknown四要素会前置追问',()=>{const d=sample('project');set(d,'memory','record','guideline');assert.equal(M.diagnose(d).stage,1);assert.equal(M.requiredQuestions(d).filter(q=>q.path.startsWith('memory.guideline')).length,4);});
+test('不同场景独立诊断，输入不被跨场景平均或覆写',()=>{const a=sample('rule'),b=sample('memory');b.subject=M.clone(a.subject);assert.equal(M.diagnose(a).stage,2);assert.equal(M.diagnose(b).stage,0);assert.deepEqual(M.diagnose(a).data,a);});
+test('所有旧示例都能保留原参数导入，不从旧资料推算新的成熟度',()=>{for(const e of oldExamples){const d=M.parse(JSON.stringify(e.data));assert.deepEqual(d.legacy_parameters,e.data);assert.equal(d.schema_version,'2.0');assert.equal(d.memory.record.value,'unknown');assert.equal(d.practice.ai_use.value,'unknown');assert.equal(d.focus.experience.value,'unknown');const r=M.diagnose(d);assert.equal(r.stage,null);assert.ok(r.required.length);assert.ok(r.curve);assert.deepEqual(M.parse(JSON.stringify(d)),d);}});
+test('格式错误、多代码块、不支持枚举和过长文件可恢复地拒绝',()=>{for(const text of ['{','```json\n{}\n```\n```json\n{}\n```','x'.repeat(160001)])assert.throws(()=>M.parse(text),M.InputError);const d=sample('project');d.practice.ai_use.value='L5';assert.throws(()=>M.validate(d),M.InputError);d.practice.ai_use.value='manual';d.inject='unexpected';assert.throws(()=>M.validate(d),M.InputError);});
+test('2,880种事实组合都有曲线，不会由工具使用或闭环声明跳过准则',()=>{let count=0;for(const experience of ['repeated','one_case','none','unknown'])for(const record of ['none','principles','guideline','unknown'])for(const ai of ['none','manual','auto_untraced','auto_traced','unknown'])for(const feedback of ['none','partial','closed','unknown'])for(const owner of ['assigned','none','unknown'])for(const rollout of ['single','phased','unknown']){const d=sample('project');set(d,'focus','experience',experience);set(d,'memory','record',record);set(d,'practice','ai_use',ai);set(d,'practice','feedback',feedback);set(d,'readiness','owner',owner);set(d,'readiness','rollout',rollout);const r=M.diagnose(d);assert.ok(['fast','linear','delayed','explore'].includes(r.curve.id));assert.ok(r.stage===null||r.stage<=1);assert.deepEqual(r.data,d);count++;}assert.equal(count,2880);});
+test('曲线为有限单调情景，准备段不会提前释放，探索曲线不画到满值',()=>{for(const id of ['fast','linear','delayed','explore']){let prev=0;for(let i=0;i<=100;i++){const v=M.curveValue(id,i/100,.32);assert.ok(Number.isFinite(v)&&v>=prev&&v<=1);prev=v;}assert.equal(M.curveValue(id,0,.32),0);}for(const id of ['fast','linear','delayed'])assert.equal(M.curveValue(id,.2,.32),0);assert.ok(M.curveValue('explore',1)<1);});
+test('新版提示词示例按同一schema可完整生成，合同前置必需事实',()=>{const skill=fs.readFileSync(require('node:path').join(__dirname,'../app/skill.txt'),'utf8'),block=skill.match(/```json\s*\n([\s\S]*?)```/);assert.ok(block);const d=M.parse(block[1]);assert.equal(d.is_example,true);assert.equal(d.schema_version,'2.0');assert.deepEqual(M.requiredQuestions(d),[]);assert.equal(M.diagnose(d).stage,1);for(const text of ['输出之前必须得到明确答案','真实事例','四要素','未知不能','schema_version="2.0"'])assert.ok(skill.includes(text));});
+test('记录状态与四要素确认矛盾时在生成前核对，不用曲线兜底掩盖',()=>{const d=sample('rule');set(d,'memory','record','none');assert.ok(M.requiredQuestions(d).some(q=>q.path==='memory.record'&&q.message.includes('矛盾')));});
+test('个人经营者不会被海报虚构成有一个团队',()=>{for(const id of ['project','inherit']){const d=sample(id);d.subject.team_mode='solo';assert.ok(!M.diagnose(d).headline.includes('团队'));}});

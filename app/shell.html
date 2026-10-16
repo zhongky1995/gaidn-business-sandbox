@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="从已有经营积累出发，探索企业的 AI 组织化方向。复制提示词、导入参数、核对信息，生成你的经营画像。">
+  <meta name="description" content="从已有经营积累出发，探索企业的 AI 组织化方向。复制提示词、导入参数、核对信息，生成你的组织AI化画像。">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' https://www.googletagmanager.com; style-src 'unsafe-inline'; img-src data: blob: https://www.googletagmanager.com https://*.google-analytics.com; font-src data:; connect-src https://www.googletagmanager.com https://*.google-analytics.com; base-uri 'none'; form-action 'none'">
   <title>GAIDN · 企业 AI 经营沙盘</title>
   <style>/* APP_STYLES */</style>
@@ -17,14 +17,14 @@
       <button type="button" data-step="result" disabled><span>03</span>生成诊断</button>
     </nav>
     <section id="start-view" aria-labelledby="start-title">
-      <header class="intro"><p class="eyebrow">从你已经拥有的东西出发</p><h1 id="start-title">你的经营积累，<br>可以怎样接入 AI？</h1><p>用一段业务介绍，看看企业的经营类型、可用的优势，<br class="desktop-only">以及一个值得开始的 AI 化方向。</p></header>
+      <header class="intro"><p class="eyebrow">从你已经拥有的东西出发</p><h1 id="start-title">你的拿手经验，<br>怎样成为团队的能力？</h1><p>选一项真实工作，看看已经拥有的经验，<br class="desktop-only">怎样留下来、用起来，并找到适合你的推进方式。</p></header>
       <div class="start-grid">
         <section class="panel prompt-panel" aria-labelledby="prompt-title">
           <span class="section-number">第一步</span><h2 id="prompt-title">让常用 AI 帮你整理</h2>
-          <p class="muted">把提示词发给你常用的大模型，介绍一项主营业务。它会补问必要信息，再给你一段可导入的参数。</p>
-          <div class="starter-questions"><p>你主要卖什么，客户为什么付费？</p><p>通常怎样交付，已经留下什么经验？</p></div>
+          <p class="muted">把提示词发给你常用的大模型，介绍业务和一项想改善的工作。它会按需要补问，再给你一段可导入的参数。</p>
+          <div class="starter-questions"><p>你做什么业务，这次最想改善哪项工作？</p><p>这项工作有什么需要老手判断的地方？</p></div>
           <div class="actions"><button type="button" id="copy-skill" class="primary">复制完整提示词</button><button type="button" id="download-skill" class="secondary">下载 SKILL.md</button></div>
-          <p class="small muted">已有业务介绍、服务说明或案例，也可以一起提供给大模型。</p>
+          <p class="small muted">已有业务介绍、复盘或脱敏事例，可以一起发给AI，不必重新填写。</p>
           <details id="prompt-details"><summary>查看提示词</summary><textarea id="skill-preview" readonly aria-label="完整参数整理提示词" spellcheck="false"></textarea></details>
         </section>
         <section class="panel import-panel" aria-labelledby="import-title">
@@ -34,26 +34,27 @@
           <div id="import-errors" class="error-box" role="alert" hidden></div><button type="button" id="copy-repair" class="text-button" hidden>复制修正要求，交给大模型</button>
         </section>
       </div>
-      <section class="example-strip" aria-label="虚构经营案例"><div><strong>先看看会得到什么</strong><p>用虚构企业体验完整流程，再换成自己的资料。</p></div><div class="actions"><label class="sr-only" for="example-select">选择虚构案例</label><select id="example-select"></select><button type="button" id="load-example" class="secondary">使用示例</button></div></section>
-      <details class="method-note"><summary>这份诊断依据什么？</summary><p>按客户购买的结果与交付方式，参考价值链、价值工坊、价值网络三种价值配置逻辑，细分六类经营模式。这是 GAIDN 的探索工具，不是排名量表。已有积累须有具体依据；建议与曲线由资料、复核人和复用条件决定。</p></details>
+      <section class="example-strip" aria-label="虚构经营案例"><div><strong>先看看会得到什么</strong><p>用不同状态的虚构企业，先看看你会得到什么。</p></div><div class="actions"><label class="sr-only" for="example-select">选择虚构案例</label><select id="example-select"></select><button type="button" id="load-example" class="secondary">使用示例</button></div></section>
+      <details class="method-note"><summary>这份诊断依据什么？</summary><p>方法参考老谭文章中的四档推进路径、L0–L5判断力成熟度与准则四要素。只观察本次选定的工作场景，不给整家公司评级。具体匹配、标题和曲线为GAIDN产品设计，不是经过企业样本验证的量表；曲线不预测营收或收益。</p></details>
     </section>
     <section id="review-view" aria-labelledby="review-title" hidden>
-      <header class="view-heading"><p class="eyebrow">把判断建立在准确的信息上</p><h1 id="review-title">先核对，再生成。</h1><p>核对主营交付、已有积累、资料状态与复核安排。其他还不确定的条件，可以保留“尚不清楚”。</p></header>
+      <header class="view-heading"><p class="eyebrow">把判断建立在准确的信息上</p><h1 id="review-title">先核对，再生成。</h1><p>重点看选定工作、实际事例和推进安排。已有资料由AI整理，细节按需要展开；明确“没有”或“未安排”也能继续。</p></header>
       <form id="review-form" novalidate></form>
       <div id="review-errors" class="error-box" role="alert" hidden></div>
-      <div class="review-actions"><button type="button" id="back-import" class="secondary">返回导入</button><button type="button" id="generate-result" class="primary">确认信息，生成诊断</button></div>
+      <div class="review-actions"><button type="button" id="back-import" class="secondary">返回导入</button><button type="button" id="download-draft" class="secondary">保存参数草稿</button><button type="button" id="generate-result" class="primary">确认信息，生成画像</button></div>
     </section>
     <section id="result-view" aria-labelledby="result-title" hidden>
-      <header class="result-heading"><div><p class="eyebrow">从积累到下一步</p><h1 id="result-title">你的 AI 经营画像</h1><p id="result-subtitle"></p></div><div class="actions"><button type="button" id="edit-result" class="secondary">修改信息</button><button type="button" id="export-png" class="primary">保存结果图片</button></div></header>
-      <div class="result-grid"><div id="poster-frame" class="poster-frame" aria-label="可保存的诊断结果"></div><aside class="result-aside"><section class="panel"><h2>判断从哪里来</h2><p class="muted small">点图中的积累，或点下面的条目，查看依据。</p><div id="basis-buttons"></div><div id="basis-detail" class="basis-detail" aria-live="polite"></div></section><section class="panel"><h2>保留这次探索</h2><p class="muted small">下载参数，之后可以重新导入修改。图片里只保留诊断摘要，不包含完整资料依据。</p><button type="button" id="download-parameters" class="secondary full-width">下载本次参数</button><button type="button" id="back-start" class="text-button">返回开始页</button></section></aside></div>
+      <header class="result-heading"><div><p class="eyebrow">让经验留下来，也让团队用起来</p><h1 id="result-title">你的组织 AI 化画像</h1><p id="result-subtitle"></p></div><div class="actions"><button type="button" id="edit-result" class="secondary">修改信息</button><button type="button" id="export-png" class="primary">保存结果图片</button></div></header>
+      <div class="result-grid"><div id="poster-frame" class="poster-frame" aria-label="可保存的诊断结果"></div><aside class="result-aside"><section class="panel"><h2>判断从哪里来</h2><p class="muted small">点图中的节点，查看实际依据、人工分工与下一份成果。</p><div id="basis-buttons"></div><div id="basis-detail" class="basis-detail" aria-live="polite"></div></section><section class="panel"><h2>保留这次探索</h2><p class="muted small">下载参数，之后可以重新导入修改。图片里只保留诊断摘要，不包含完整资料依据。</p><button type="button" id="download-parameters" class="secondary full-width">下载本次参数</button><button type="button" id="back-start" class="text-button">返回开始页</button></section></aside></div>
     </section>
     <p id="app-status" class="status" role="status" aria-live="polite"></p>
   </main>
-  <footer class="site-footer"><span>GAIDN · 连接全球创造者，让 AI 创新惠及更多人</span><span>经营探索工具 · v1.0.1</span><details class="method-note"><summary>访问统计说明</summary><p>本网站使用 Google Analytics 记录基础访问与操作事件，用于改善体验。统计仅包含操作步骤、是否成功，以及示例或自有资料的来源类别；企业名称、业务介绍、诊断参数和图片内容在本机处理。Google 标签可能使用浏览器标识和 Cookie 统计访问。</p></details></footer>
+  <footer class="site-footer"><span>GAIDN · 连接全球创造者，让 AI 创新惠及更多人</span><span>组织AI化探索工具 · v2.0.0</span><details class="method-note"><summary>访问统计说明</summary><p>本网站使用 Google Analytics 记录基础访问与操作事件，用于改善体验。统计仅包含操作步骤、是否成功，以及示例或自有资料的来源类别；企业名称、业务介绍、诊断参数和图片内容在本机处理。Google 标签可能使用浏览器标识和 Cookie 统计访问。</p></details></footer>
   <dialog id="image-dialog" aria-labelledby="image-title"><div class="dialog-heading"><h2 id="image-title">结果图片已生成</h2><button type="button" id="close-image" class="secondary">关闭</button></div><p class="muted small">点击下载；手机上也可长按图片保存，再分享给朋友。</p><div class="actions"><a id="download-image" class="primary" download>下载 PNG 图片</a><button type="button" id="native-share" class="secondary" hidden>分享图片</button></div><img id="export-image" alt="本次经营诊断结果图片"></dialog>
   <script id="analytics-config" type="application/json">/* ANALYTICS_CONFIG */</script>
   <script>/* APP_ANALYTICS */</script>
   <script id="skill-content" type="application/json">/* SKILL_CONTENT */</script>
+  <script>/* APP_LEGACY */</script>
   <script>/* APP_MODEL */</script>
   <script>/* APP_EXAMPLES */</script>
   <script>/* APP_POSTER */</script>
