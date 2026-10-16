@@ -42,3 +42,7 @@ test('tag and tracking failures never throw into application flows',()=>{
 test('existing data layer is preserved and unknown referrer is safely empty',()=>{
  const s=setup({dataLayer:[['prior']],document:{referrer:'invalid private text'}});assert.deepEqual(s.win.dataLayer[0],['prior']);assert.equal(s.events()[0][2].page_referrer,'');
 });
+test('only explicitly configured deployment aliases enable analytics; actual URL remains stripped of private queries',()=>{
+ const alias='https://sandbox.example.test',cfg={...config,additional_origins:[alias]};const s=setup({config:cfg,location:{origin:alias,search:'?company=secret'}});assert.equal(s.api.enabled,true);assert.equal(s.events()[0][2].page_location,alias+config.pathname);assert.ok(!JSON.stringify(s.events()).includes('secret'));
+ assert.equal(setup({config:cfg,location:{origin:'https://unlisted.example.test'}}).api.enabled,false);assert.equal(setup({config:cfg,location:{origin:alias,pathname:'/other'}}).api.enabled,false);
+});

@@ -20,8 +20,9 @@
     const api = {track: noop, enabled: false};
     try {
       if (!/^G-[A-Z0-9]{6,20}$/.test(config.measurement_id || '')) return api;
-      if (win.location.protocol !== 'https:' || win.location.origin !== config.origin || win.location.pathname !== config.pathname) return api;
-      const pageLocation = config.origin + config.pathname;
+      const allowedOrigins = [config.origin, ...(Array.isArray(config.additional_origins) ? config.additional_origins : [])];
+      if (win.location.protocol !== 'https:' || !allowedOrigins.includes(win.location.origin) || win.location.pathname !== config.pathname) return api;
+      const pageLocation = win.location.origin + config.pathname;
       let referrer = '';
       try {referrer = new URL(win.document.referrer).origin + '/';} catch {}
       const debug = new URLSearchParams(win.location.search).get('ga_debug') === '1';
