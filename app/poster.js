@@ -73,17 +73,29 @@ function poster(result,width=640,active=null){
  result.milestones.forEach((m,i)=>{y+=text((i+1)+'  '+m.title,pad,y,small?12:14,p.ink,500)+2;y+=text(m.detail,pad+19,y,small?11:12,p.fg,400,'start',inner-19,small?20:22)+9;});
  y+=text(result.route.name,pad,y,11,p.muted)+3;y+=text(result.data.readiness.owner.evidence,pad,y,11,p.muted,400,'start',inner,19)+14;
  line(pad,y,w-pad,y);y+=16;
- const c=result.curve;y+=text(c.title,pad,y,small?16:20,p.fg,500)+4;y+=text('本次工作能力的变化节奏 · 条件情景',pad,y,10,p.muted)+5;
- const left=pad+15,right=w-pad-4,plotTop=y+14,bottom=y+112,pointsC=[];
- line(left,plotTop,right,plotTop,.35);line(left,bottom,right,bottom);text('相对能力／可用范围',left,plotTop-5,10,p.muted,400,'start',right-left);
- for(let i=0;i<=100;i++){const t=i/100;pointsC.push([left+(right-left)*t,bottom-(bottom-plotTop-16)*M.curveValue(c.id,t,c.preparation)]);}
- const d=pointsC.map((v,i)=>(i?'L':'M')+v.map(x=>x.toFixed(2)).join(' ')).join(' ');add(`<path d="${d} L ${right} ${bottom} L ${left} ${bottom} Z" fill="url(#v3-area)"/><path data-curve-kind="${esc(c.id)}" d="${d}" fill="none" stroke="${p.ink}" stroke-width="2.2" stroke-dasharray="5 4" stroke-linecap="round"/>`);
- const lw=(right-left)/3-6;let labelH=0;c.phases.forEach((label,i)=>{const anchor=i===0?'start':i===2?'end':'middle',x=i===0?left:i===2?right:(left+right)/2;labelH=Math.max(labelH,text(label,x,bottom+9,10,p.muted,400,anchor,lw,16));});y=bottom+labelH+24;
- y+=text(c.basis,pad,y,10,p.muted,400,'start',inner,18)+4;if(c.id!=='delayed')y+=text(c.condition,pad,y,10,p.muted,400,'start',inner,18)+5;
- y+=text('仅观察本次工作；曲线不预测日期、营收或增长率。',pad,y,10,p.muted,400,'start',inner,18)+11;
+ const c=result.curve,down=c.direction==='decrease',explore=c.id==='explore';
+ y+=text('AI化业务改善曲线',pad,y,small?16:20,p.fg,500)+6;
+ y+=text(c.title,pad,y,small?12:14,p.ink,500,'start',inner,small?20:23)+6;
+ y+=text('纵轴：'+c.metric,pad,y,small?11:12,p.fg,500,'start',inner,small?19:21)+3;
+ y+=text(explore?'改善方向待验证；水平线不代表已测得零改善':down?'希望减少 · 线往下，代表这项结果改善':'希望增加 · 线往上，代表这项结果改善',pad,y,10,p.muted,400,'start',inner,17)+4;
+ const left=pad+8,right=w-pad-8,plotTop=y+20,bottom=plotTop+100,pointsC=[];
+ const reference=bottom-(bottom-plotTop)*M.curveLevel(c,0);
+ line(left,plotTop,right,plotTop,.2);line(left,bottom,right,bottom,.2);
+ add(`<path d="M ${left} ${reference} H ${right}" fill="none" stroke="${p.edge}" stroke-width="1" opacity=".65"/>`);
+ text(explore?'先记录一次实际结果':'当前做法（参照线）',left,plotTop-17,9,p.muted,400,'start',right-left);
+ for(let i=0;i<=100;i++){const t=i/100;pointsC.push([left+(right-left)*t,bottom-(bottom-plotTop)*M.curveLevel(c,t)]);}
+ const d=pointsC.map((v,i)=>(i?'L':'M')+v.map(x=>x.toFixed(2)).join(' ')).join(' ');
+ add(`<path data-curve-kind="${esc(c.id)}" data-curve-direction="${esc(c.direction)}" data-curve-metric="${esc(c.metric)}" d="${d}" fill="none" stroke="${p.ink}" stroke-width="2.2" stroke-dasharray="5 4" stroke-linecap="round"/><circle cx="${left}" cy="${pointsC[0][1]}" r="3" fill="${p.ink}"/>`);
+ const lw=(right-left)/3-8;let labelH=0;c.phases.forEach((label,i)=>{const anchor=i===0?'start':i===2?'end':'middle',x=i===0?left:i===2?right:(left+right)/2;labelH=Math.max(labelH,text(label,x,bottom+10,10,p.muted,400,anchor,lw,16));});y=bottom+labelH+20;
+ y+=text('横轴：实施阶段 · 与上方三步一致',pad,y,10,p.muted,400,'start',inner,18)+11;
+ y+=text('当前：'+c.baseline.evidence,pad,y,small?10:11,p.muted,400,'start',inner,small?18:20)+5;
+ y+=text('改善设想：'+c.hypothesis,pad,y,small?11:12,p.fg,400,'start',inner,small?19:22)+5;
+ y+=text('为什么这样走：'+c.basis,pad,y,small?10:11,p.muted,400,'start',inner,small?18:20)+5;
+ y+=text('怎样验证：'+c.check,pad,y,small?10:11,p.muted,400,'start',inner,small?18:20)+8;
+ y+=text('虚线只示意条件成立后的节奏，无数值刻度，不预测日期或改善幅度。',pad,y,9,p.muted,400,'start',inner,16)+11;
  line(pad,y,w-pad,y);y+=12;y+=text('GAIDN · 让已有的本事，用到更多次业务里',pad,y,small?10:11,p.muted)+3;
  y+=text('方法参考：老谭·准则工程；机会结构与情景匹配为GAIDN设计。',pad,y,9,p.muted,400,'start',inner,16)+12;
- const height=Math.ceil(y),svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${height}" viewBox="0 0 ${w} ${height}" role="img" aria-label="${esc(result.data.subject.name+'：'+result.headline)}" style="font-family:${esc(font)}"><title>${esc(result.classification)}</title><desc>${esc(result.explanation+' '+result.next+' '+c.title+' '+c.basis)}</desc><rect x=".5" y=".5" width="${w-1}" height="${height-1}" rx="18" fill="${p.bg}" stroke="${p.line}"/>${parts.join('')}</svg>`;
+ const height=Math.ceil(y),svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${height}" viewBox="0 0 ${w} ${height}" role="img" aria-label="${esc(result.data.subject.name+'：'+result.headline)}" style="font-family:${esc(font)}"><title>${esc(result.classification)}</title><desc>${esc(result.explanation+' '+result.next+' '+c.title+' 业务指标：'+c.metric+' '+M.OUTCOME_DIRECTIONS[c.direction]+' '+c.basis+' '+c.hypothesis+' '+c.check)}</desc><rect x=".5" y=".5" width="${w-1}" height="${height-1}" rx="18" fill="${p.bg}" stroke="${p.line}"/>${parts.join('')}</svg>`;
  return {svg,height,hitTargets};
 }
 const api={poster,layoutGraph,wrap};if(typeof module!=='undefined'&&module.exports)module.exports=api;else host.GAIDNPoster=api;
