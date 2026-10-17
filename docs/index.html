@@ -28,9 +28,9 @@
       <div class="start-grid">
         <section class="panel prompt-panel" aria-labelledby="prompt-title">
           <span class="section-number">第一步</span><h2 id="prompt-title">让常用 AI 帮你整理</h2>
-          <p class="muted">把提示词发给你常用的大模型，介绍企业业务、客户、收入和已有积累。它会按需要补问，再给你一段可导入的参数。</p>
-          <div class="starter-questions"><p>企业做什么生意，服务谁，收入从哪里来？</p><p>已经积累了什么，哪部分值得先与 AI 结合？</p></div>
-          <div class="actions"><button type="button" id="copy-skill" class="primary">复制完整提示词</button><button type="button" id="download-skill" class="secondary">下载 SKILL.md</button></div>
+          <p class="muted">把提示词发给你常用的大模型，随口介绍你们做什么生意。AI 会主动联想机会，最多补问一个关键问题，再整理好参数。</p>
+          <div class="starter-questions"><p>你们做什么生意，客户为什么找你？</p><p>AI 来判断：哪些本事还能带来新的经营机会。</p></div>
+          <div class="actions"><button type="button" id="copy-skill" class="primary">复制新版提示词 · 5.1</button><button type="button" id="download-skill" class="secondary">下载 SKILL.md</button></div>
           <p class="small muted">已有业务介绍、复盘或脱敏事例，可以一起发给AI，不必重新填写。</p>
           <details id="prompt-details"><summary>查看提示词</summary><textarea id="skill-preview" readonly aria-label="完整参数整理提示词" spellcheck="false"></textarea></details>
         </section>
@@ -45,18 +45,18 @@
       <details class="method-note"><summary>这份诊断依据什么？</summary><p>从企业业务、客户与收入理解已有积累，突出最值得先与 AI 结合的优势。六类图形表达积累的组织方式，不代表评级；经营基础匹配四套固定情景，统一展示同等团队与时间下可稳定承担的业务量。曲线是条件示意，不能视为日期、增长率或营收预测。</p></details>
     </section>
     <section id="review-view" aria-labelledby="review-title" hidden>
-      <header class="view-heading"><p class="eyebrow">把判断建立在准确的信息上</p><h1 id="review-title">先核对，再生成。</h1><p>确认企业整体信息、已有积累和 AI 优先方向。缺项可直接在本页补齐；经营基础决定固定曲线，不需要设置图表参数。</p></header>
+      <header class="view-heading"><p class="eyebrow">把判断建立在准确的信息上</p><h1 id="review-title">看看理解得对不对。</h1><p>看看 AI 对企业和机会的理解是否合适；有偏差再改，不需要逐项填表。联想内容会明确标出。</p></header>
       <form id="review-form" novalidate></form>
       <div id="review-errors" class="error-box" role="alert" hidden></div>
       <div class="review-actions"><button type="button" id="back-import" class="secondary">返回导入</button><button type="button" id="download-draft" class="secondary">保存参数草稿</button><button type="button" id="generate-result" class="primary">确认信息，生成画像</button></div>
     </section>
     <section id="result-view" aria-labelledby="result-title" hidden>
       <header class="result-heading"><div><p class="eyebrow">让经验留下来，也让团队用起来</p><h1 id="result-title">你的企业 AI 化机会画像</h1><p id="result-subtitle"></p></div><div class="actions"><button type="button" id="edit-result" class="secondary">修改信息</button><button type="button" id="export-png" class="primary">保存结果图片</button></div></header>
-      <div class="result-grid"><div id="poster-frame" class="poster-frame" aria-label="可保存的诊断结果"></div><aside class="result-aside"><section class="panel"><h2>判断从哪里来</h2><p class="muted small">点图中的积累，查看企业信息、优势判断和固定经营情景的依据。</p><div id="basis-buttons"></div><div id="basis-detail" class="basis-detail" aria-live="polite"></div></section><section class="panel"><h2>保留这次探索</h2><p class="muted small">下载参数，之后可以重新导入修改。图片里只保留诊断摘要，不包含完整资料依据。</p><button type="button" id="download-parameters" class="secondary full-width">下载本次参数</button><button type="button" id="back-start" class="text-button">返回开始页</button></section></aside></div>
+      <div class="result-grid"><div id="poster-frame" class="poster-frame" aria-label="可保存的诊断结果"></div><aside class="result-aside"><section class="panel"><h2>判断从哪里来</h2><p class="muted small">点图中的线索，区分已知资料、AI 联想与固定情景的依据。</p><div id="basis-buttons"></div><div id="basis-detail" class="basis-detail" aria-live="polite"></div></section><section class="panel"><h2>保留这次探索</h2><p class="muted small">下载参数，之后可以重新导入修改。图片里只保留诊断摘要，不包含完整资料依据。</p><button type="button" id="download-parameters" class="secondary full-width">下载本次参数</button><button type="button" id="back-start" class="text-button">返回开始页</button></section></aside></div>
     </section>
     <p id="app-status" class="status" role="status" aria-live="polite"></p>
   </main>
-  <footer class="site-footer"><span>GAIDN · 连接全球创造者，让 AI 创新惠及更多人</span><span>企业AI化探索工具 · v5.0.0</span><details class="method-note"><summary>访问统计说明</summary><p>本网站使用 Google Analytics 记录基础访问与操作事件，用于改善体验。统计仅包含操作步骤、是否成功，以及示例或自有资料的来源类别；企业名称、业务介绍、诊断参数和图片内容在本机处理；核对草稿仅保存在当前浏览器标签页，关闭标签页后清除。Google 标签可能使用浏览器标识和 Cookie 统计访问。</p></details></footer>
+  <footer class="site-footer"><span>GAIDN · 连接全球创造者，让 AI 创新惠及更多人</span><span>企业AI化探索工具 · v5.1.0</span><details class="method-note"><summary>访问统计说明</summary><p>本网站使用 Google Analytics 记录基础访问与操作事件，用于改善体验。统计仅包含操作步骤、是否成功，以及示例或自有资料的来源类别；企业名称、业务介绍、诊断参数和图片内容在本机处理；核对草稿仅保存在当前浏览器标签页，关闭标签页后清除。Google 标签可能使用浏览器标识和 Cookie 统计访问。</p></details></footer>
   <dialog id="image-dialog" aria-labelledby="image-title"><div class="dialog-heading"><h2 id="image-title">结果图片已生成</h2><button type="button" id="close-image" class="secondary">关闭</button></div><p class="muted small">点击下载；手机上也可长按图片保存，再分享给朋友。</p><div class="actions"><a id="download-image" class="primary" download>下载 PNG 图片</a><button type="button" id="native-share" class="secondary" hidden>分享图片</button></div><img id="export-image" alt="本次经营诊断结果图片"></dialog>
   <script id="analytics-config" type="application/json">{"measurement_id": "G-R3SEBYCRSR", "origin": "https://zhongky1995.github.io", "pathname": "/gaidn-business-sandbox/"}</script>
   <script>(function (host) {
@@ -126,7 +126,7 @@
   }
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 </script>
-  <script id="skill-content" type="application/json">"# GAIDN 企业 AI 化机会画像 · 参数整理 SKILL\n版本5.0。你负责理解企业、提出判断并整理参数；网页只按固定规则画图，不内嵌AI。诊断对象是企业整体，突出最值得先与AI结合的一项积累。单项工作只能作为起步例子。\n\n## 快速对话\n先阅读用户现有资料；不重复问已知信息。用日常经营语言，一轮最多问两个问题，通常2—3轮即可，不让老板填问卷。先理解企业，再给判断，不顺着用户的话硬编优势。\n\n输出之前必须得到明确答案：\n1. 企业做什么、服务谁、收入从哪里来。\n2. 三项真实积累以及依据：做过什么、留下什么；最值得先与AI结合的放第一项。不足三项就先补问，不把意向、行业常识或AI推断写成已拥有优势。\n3. 经营基础：下面四种状态中，哪项最符合实际；核实其适用条件。不能只问用户“想要哪条曲线”。\n未知不能当已就绪。补问只问影响判断的缺口，一次归并；用户不想再聊时可返回未完成草稿，缺项留空、readiness/mechanism填unknown，并说明可在网页核对页补齐。不可为了出图编造事实。\n\n## 上部：企业优势六选一\n选择“最值得先拥抱AI”的优势，不把企业锁死为唯一类型。三项积累支持企业整体经营，不强迫围绕一次任务。\n- knowledge 知识资产优势：产品、客户或行业知识能成为多处共用依据。图形：聚合星核。\n- process 流程运营优势：稳定做法、标准与反馈支撑交付。图形：连续环流。\n- expert 专家经验优势：少数人的专业判断能逐步留下依据。图形：经验辐射。\n- project 项目资产优势：已完成成果、模块或方法具备复用空间。图形：项目星团。\n- matching 资源连接优势：真实两端资源，价值来自适配判断。图形：双核引力。\n- network 协作网络优势：品牌、伙伴、终端等多中心共享方法与反馈。图形：多中心星网。\n亮度、大小、连线只表现组织方式，不代表分数、成熟度或已实现效果。\n\n## 下部：四套固定经营情景\n只输出一项readiness，网页自动匹配。优势类型不决定曲线；同一优势可以因经营基础不同而匹配不同情景。\n- usable → 快速释放型：资料、方法与适用边界可使用，重复准备仍消耗团队，尚未充分组织为AI应用。先提升，再趋稳。\n- learning → 稳步增益型：已有实际AI使用、人工检查与真实反馈修订，改进持续积累。小改进，持续积累。\n- building → 蓄势跃迁型：已有真实积累，但资料分散、经验隐性或方法未整理，需要先建设可复用能力。先建设，后释放。\n- connecting → 协同放大型：至少一处做法已有实际记录、检查和反馈，企业依赖多方或多个经营环节，仍需逐段连通验证。连通一处，放大一段。\n若条件重叠，选择当前最限制企业把积累转成经营能力的那一项，rationale写出依据；不能仅凭连锁企业就选connecting，不能仅凭用了AI就选learning。无依据就unknown，不自动兜底成增长。\n四情景统一纵轴“同等团队与时间下，可稳定承担的业务量”，横轴“AI化推进过程”，阶段固定“开始应用／形成稳定能力／扩大经营应用”。曲线形态、轴、说明和统一示意终点由网页固定。不输出model、metric、斜率、日期、百分比、预测营收或企业特定曲线参数。\n这是条件情景，不保证实际增长。需求、设备、资金、资质等约束仍成立；不能把少做文案推导为营收增长或把AI用于维修推导为替代合资格现场操作。\n\n## 形成值得分享的结论\n先向用户用两三句话解释：哪项积累值得先组织成企业能力、为什么适合AI、为什么匹配这项经营情景。让用户纠正事实后再输出。\nheadline是两行有经营含义的结论，结合真实积累写“已有本事怎样成为更广的经营能力”，不写广告、口号、保证增长或夸张标签。\ndiagnosis简述企业积累与AI化走向；priority写企业层面的AI方向；first只给一个小起步例子。别把起步例子写成企业诊断范围。\n\n## 参数格式与版式边界\n只给一份JSON对象。必须使用schema_version:\"5.0\"，所有键完整，未知留空不删键。用户真实企业is_example:false；虚构或合成案例true，不把示例数据混入用户资料。\ncompany.name约18字内；business约20字内；customers约14字内；business加customers合计约33字内；income约30字内。\nassets恰好三项，各约8字内。evidence写真实依据，8—1200字；readiness选择上述四项或unknown；rationale写选择依据，8—1200字。\nheadline恰好两项，每行约15字内；diagnosis约62字内；priority约28字内；first约30字内，可为空。以上短文案不要包含换行；headline用数组分两行。英文按约半个汉字宽度算。网页会提示需精简的文案，不截断原输入。\n\n下面仅为完整格式示例，内容属于虚构企业，不能照搬：\n```json\n{\n  \"schema_version\":\"5.0\",\n  \"is_example\":true,\n  \"company\":{\"name\":\"拾木家居\",\"business\":\"自有家居用品品牌\",\"customers\":\"家庭用户\",\"income\":\"产品销售与配套服务\"},\n  \"mechanism\":\"knowledge\",\n  \"assets\":[\"产品理解\",\"用户问题\",\"渠道触点\"],\n  \"evidence\":\"产品团队熟悉适用场景，常见问题已有可查说明；多个渠道仍各自准备内容与答复，AI主要用于零散初稿。\",\n  \"readiness\":\"usable\",\n  \"rationale\":\"资料和边界已可用，多个触点仍重复准备，适合先减少重复消耗；不能据此保证销量增长。\",\n  \"headline\":[\"把产品卖好的本事，\",\"复制给更多经营触点。\"],\n  \"diagnosis\":\"产品理解、用户反馈和渠道触点已经形成积累。优先把这份理解变成共同依据，让售前、内容与服务共同受益。\",\n  \"priority\":\"把产品经验组织成全渠道共用的知识资产\",\n  \"first\":\"先整理一组高频产品问题，验证不同渠道能否共用。\"\n}\n```\n提示用户：复制整段JSON回网页，导入、核对、生成海报；不要让用户手工算分或设置图表。\n"</script>
+  <script id="skill-content" type="application/json">"# GAIDN 企业 AI 机会顾问 · 对话版 5.1\n请按这份新版要求开始。若本对话曾使用 GAIDN-4.0、单项工作诊断或“经验传承”模板，请停止沿用旧问题与字段。我们的目标是用很少的交流，让老板看见整家企业值得与AI结合的优势和机会，并得到可直接导入网页的海报参数。\n\n## 你的任务：主动思考，少问多给\n用户只负责讲生意和纠正关键事实。你负责理解、联想、提出商业判断、撰写结论、选择类型与路径、生成参数。不要请用户填字段、写金句、列三项资产、证明每项积累、选模型、算分或设置曲线。\n已经有企业介绍就直接分析；完全没资料时只说：“简单聊聊你们做什么生意、客户为什么找你就行，几句话或一段介绍都可以。”\n\n听完先给一个具体的新认识，再决定要不要问。例如“你们做过的项目，可能不只是交付记录，也能成为销售讲清能力、识别相似需求的依据。AI值得先接的是这层积累。”不要只复述用户的话或泛称降本增效。\n最多追加1轮、1个会改变判断的问题，给2—3个贴近日常经营的选项，允许用户随口回答。已有足够线索就不问；用户说“直接出结果”，就用明确标识的假设做初步画像。不再为不影响方向的收入结构、AI使用细节或资料完整度逐项追问。\n不要另外要求“确认后才输出”。说明初步判断和关键假设后，在同一回复给出参数；用户可随时纠正再生成。\n\n## 联想怎样产生价值\n从业务的成交、交付、复购与扩张看，找出企业已经投入很多、但尚未被反复使用的东西。主动走一步：\n- 做项目：考虑成果、业务理解、行业场景、可复用模块，是否还能帮助下一次销售与交付。\n- 做产品：考虑产品理解、用户问题、服务经验，是否能成为多个经营触点共用的依据。\n- 靠专业服务：考虑关键判断、例外处理和经验，能否逐步成为团队能力。\n- 运营/连锁：考虑稳定做法、伙伴与反馈，是否能在更多环节协同使用。\n- 做资源连接：考虑两端条件与履约反馈，是否能提高适配质量。\n这些是思考线索，不能当作客户已拥有的事实。不要仅按行业套类型；看哪种积累最可能带动企业经营。\n\n严格区分：用户说过的写进evidence；你的联想、推测和未核实前提写进assumptions，诊断用“可能、可先、如果已有”等合适语气。可以补商业解释、候选优势、机会与路径建议；不能捏造客户、营收、系统、验收记录或成功案例。“用户没说”不等于“没有”。\n经营不顺是问题线索，不自动是优势。比如“获客难成交”不能据此归为专家经验优势；先找企业凭什么有机会成交、交付能留下什么，再考虑AI如何把这份能力组织起来。不要把成交率、预算或决策人当所有企业共同的唯一问题。\n\n## 形成一份企业判断\n先用约100字讲清“最值得先与AI结合的积累 → 原来没被充分使用的机会 → 建议方向”。一条主线即可，不写长篇咨询报告。\n选3个简短图形标签，最值得先与AI结合的放第一项；允许提出待确认的潜在优势，但在assumptions注明。短缺时由你组织候选线索，不把任务退给用户。\nheadline写两行有经营含义、值得分享的结论：讲已有能力怎样获得更广用途，别写广告、空泛励志或保证增长。priority是企业层面的AI方向；first只是一个可选起步例子，不能把整张诊断缩成单项任务。\n\n## 两个选择由你完成\nmechanism只填一个英文值：knowledge（知识资产）、process（流程运营）、expert（专家经验）、project（项目资产）、matching（资源连接）、network（协作网络）。它表达本次优先机会，不是给企业永久贴标签。\nreadiness只填一个英文值，独立于mechanism：\n- usable：已有可用资料/方法，仍有重复准备 → 快速释放型。\n- learning：已有实际AI应用和反馈修订 → 稳步增益型。\n- building：先组织经验/成果，再检验复用 → 蓄势跃迁型。\n- connecting：已有可检查做法，关键在多方逐段连通 → 协同放大型。\n资料不充分时可以提出条件情景，并将“为什么暂选、哪项条件未核实”放入assumptions。没有AI现状线索，优先建议先组织、再验证的building路线，不认定企业一定未准备好。不要仅因用了AI选learning，仅因是连锁选connecting。\n四种曲线由网页固定，统一表示“同等团队与时间下，可稳定承担的业务量”。不要生成坐标、斜率、日期、改善比例、自由指标或营收预测。\n\n## 最后输出：由你生成，不让用户补参数\n在简短解释之后，只给一个json代码框。用下面这套固定键名，不输出version/status/enterprise/focus_work/relation/observation/experience_conditions等旧版字段。禁止追加第二套参数。\n生成后自行核对：schema_version是\"5.0\"；company是对象；两个枚举准确；assets是3个字符串；headline是2个字符串；assumptions是数组；JSON使用英文双引号、没有注释或尾逗号。不要要求用户检查语法。\n文案尽量短：name约18字；business约20字；customers约14字；每个assets约8字；headline每行约15字；diagnosis约62字；priority约28字；first约30字。超长由你精简，不能让老板为排版改稿。客户/收入未知可留空，别补造；evidence和rationale由你总结，用户无需提供“标准答案”。\n真实用户企业is_example:false；只有虚构案例才true。以下示例完全虚构，只示意格式与如何标出推测，不可照搬为用户事实：\n```json\n{\n  \"schema_version\":\"5.0\",\n  \"is_example\":true,\n  \"company\":{\"name\":\"示例软件公司\",\"business\":\"企业软件开发\",\"customers\":\"\",\"income\":\"\"},\n  \"mechanism\":\"project\",\n  \"assets\":[\"交付成果线索\",\"业务场景\",\"复用机会\"],\n  \"evidence\":\"用户介绍主营企业软件开发，尚未说明具体项目和既有成果。\",\n  \"readiness\":\"building\",\n  \"rationale\":\"先建议整理和验证交付积累，是否已有可复用成果仍需确认。\",\n  \"assumptions\":[\"项目成果、行业场景与复用空间是根据业务提出的候选优势，尚未证实。\",\"先建设、后释放是探索情景，未认定当前成熟度。\"],\n  \"headline\":[\"让每次交付留下的东西，\",\"继续为下一次生意出力。\"],\n  \"diagnosis\":\"如果已有项目积累，可先把成果与业务理解组织起来，作为后续销售和交付的共同依据。\",\n  \"priority\":\"把交付积累组织成可展示、可匹配的业务资产\",\n  \"first\":\"先选一个已完成项目，梳理它能证明什么。\"\n}\n```\n最后只提醒一句：“复制这段参数回沙盘，核对后就能生成海报；联想部分已标出，你可以直接改。”\n"</script>
   <script>(function (host) {
   'use strict';
   const TYPES = {
@@ -571,20 +571,49 @@ for(const m of Object.values(MODELS))Object.assign(m,{metric:'同等团队与时
 const units=s=>[...String(s)].reduce((n,c)=>n+(c.charCodeAt(0)<128?.55:1),0);
 const LIMITS={'company.name':18,'company.business':20,'company.customers':14,'company.income':30,diagnosis:62,priority:28,first:30};
 const LABELS={'company.name':'企业名称','company.business':'主营业务','company.customers':'主要客户','company.income':'收入来源',evidence:'积累的事实依据',rationale:'经营基础的判断依据',diagnosis:'整体诊断',priority:'AI 优先方向',first:'起步例子'};
-function blank(){return {schema_version:'5.0',is_example:false,company:{name:'',business:'',customers:'',income:''},mechanism:'unknown',assets:[],evidence:'',readiness:'unknown',rationale:'',headline:[],diagnosis:'',priority:'',first:''};}
+function blank(){return {schema_version:'5.0',is_example:false,company:{name:'',business:'',customers:'',income:''},mechanism:'unknown',assets:[],evidence:'',readiness:'unknown',rationale:'',headline:[],diagnosis:'',priority:'',first:'',assumptions:[]};}
+const DEFAULTS={
+ knowledge:{assets:['产品与业务知识','客户问题线索','经营触点'],headline:['把懂业务的本事，','变成企业共用的能力。'],priority:'把业务知识组织成团队可调用的共同依据'},
+ process:{assets:['经营做法','交付环节','反馈线索'],headline:['让做事的好方法，','成为企业接住业务的底气。'],priority:'让经营做法与反馈形成可持续改进的依据'},
+ expert:{assets:['专业判断线索','业务经验','团队应用'],headline:['让少数人的经验，','有机会成为整家公司的本事。'],priority:'组织专业判断的依据，让团队能够复用'},
+ project:{assets:['交付成果线索','业务场景','复用机会'],headline:['让每次交付留下的东西，','继续为下一次生意出力。'],priority:'把项目成果组织成可展示、可匹配的业务资产'},
+ matching:{assets:['适配判断线索','需求一端','供给一端'],headline:['连接资源的价值，','在于更懂怎样配得上。'],priority:'把需求、供给与反馈组织成可更新的适配依据'},
+ network:{assets:['共同方法线索','协作伙伴','终端反馈'],headline:['让一处的好做法，','成为更多人做成事的条件。'],priority:'让方法、协作和反馈成为多方共用的经营依据'}
+};
 function normalize(raw){
- const d=blank(),notes=[];
- const str=(obj,k,path)=>{if(obj?.[k]===undefined)return '';if(typeof obj[k]!=='string'){notes.push(path+'格式需确认');return '';}return obj[k].trim();};
- if(raw.company!==undefined&&(!raw.company||typeof raw.company!=='object'||Array.isArray(raw.company)))notes.push('企业资料格式需确认');
- for(const k of Object.keys(d.company))d.company[k]=str(raw.company,k,'company.'+k);
- for(const k of ['evidence','rationale','diagnosis','priority','first'])d[k]=str(raw,k,k);
+ const d=blank(),notes=[],assumptions=[];
+ const str=(o,k)=>typeof o?.[k]==='string'?o[k].trim():'';
+ const co=typeof raw.company==='string'?{name:raw.company,business:raw.business,customers:raw.customers,income:raw.income}:raw.company;
+ if(typeof raw.company==='string')notes.push('企业名称已读入，业务资料保留');
+ for(const k of Object.keys(d.company))d.company[k]=str(co,k);
+ for(const k of ['evidence','rationale','diagnosis','priority','first'])d[k]=str(raw,k);
  d.is_example=raw.is_example===true;if(raw.is_example!==undefined&&typeof raw.is_example!=='boolean'){d.is_example=true;notes.push('示例标识格式不明确，暂按示例展示');}
- for(const [k,values] of [['mechanism',MECHANISM_OPTIONS],['readiness',READINESS_OPTIONS]]){if(raw[k]!==undefined){if(Object.hasOwn(values,raw[k]))d[k]=raw[k];else notes.push(k+'未识别，请在本页选择');}}
- for(const k of ['assets','headline'])if(raw[k]!==undefined){if(Array.isArray(raw[k])&&raw[k].every(v=>typeof v==='string'))d[k]=raw[k].map(v=>v.trim());else notes.push(k+'需填写文字列表');}
+ const mechAliases=Object.fromEntries(Object.entries(MECHANISMS).flatMap(([k,v])=>[[k,k],[v.name,k]]));
+ Object.assign(mechAliases,{'知识资产':'knowledge','流程运营':'process','专家经验':'expert','项目资产':'project','资源连接':'matching','协作网络':'network'});
+ const pathAliases={usable:'usable',learning:'learning',building:'building',connecting:'connecting',fast:'usable',steady:'learning',delayed:'building',network:'connecting','快速释放型':'usable','稳步增益型':'learning','蓄势跃迁型':'building','协同放大型':'connecting'};
+ const mk=str(raw,'mechanism'),rk=str(raw,'readiness')||str(raw,'model');d.mechanism=mechAliases[mk]||mechAliases[mk.toLowerCase()]||'unknown';d.readiness=pathAliases[rk]||'unknown';
+ if(mk&&mk!=='unknown'&&d.mechanism!==mk)notes.push('优势名称已转换为页面识别格式');
+ if(rk&&rk!=='unknown'&&d.readiness!==rk)notes.push('经营情景名称已转换为页面识别格式');
+ const list=v=>Array.isArray(v)?v.filter(x=>typeof x==='string').map(x=>x.trim()).filter(Boolean):typeof v==='string'?v.split(/[、,，\r\n]/).map(x=>x.trim()).filter(Boolean):[];
+ d.assets=list(raw.assets);if(d.assets.length>3){d.assets=d.assets.slice(0,3);notes.push('主图采用前三项线索，完整列表保留在原输入中');}d.headline=Array.isArray(raw.headline)?raw.headline.filter(x=>typeof x==='string'&&x.trim()).map(x=>x.trim()):typeof raw.headline==='string'?raw.headline.split(/[\r\n|｜]/).map(x=>x.trim()).filter(Boolean):[];
+ d.assumptions=list(raw.assumptions);const add=x=>assumptions.push(x);
+ // Optional business facts remain unknown. Suggested copy is not evidence of assets.
+ if(!d.company.name)d.company.name='我的企业';
+ const def=DEFAULTS[d.mechanism];
+ if(def&&d.company.business){
+  if(d.assets.length<3){const used=[...d.assets];d.assets=[...used,...def.assets.filter(v=>!used.includes(v))].slice(0,3);add('部分优势线索由页面按类型补作建议，尚未确认企业已拥有。');}
+  if(!d.headline.length){d.headline=clone(def.headline);add('标题由页面补作方向性建议。');}
+  if(!d.priority){d.priority=def.priority;add('AI方向按所选优势提出，实际条件仍待核实。');}
+  if(!d.diagnosis){d.diagnosis='可从'+MECHANISMS[d.mechanism].name+'寻找机会，优先让业务积累成为团队共用的依据。具体优势与适用条件仍待确认。';add('诊断为初步机会判断，不能当作已经验证的企业优势。');}
+  if(d.readiness==='unknown'){d.readiness='building';d.rationale=d.rationale||'经营基础尚未说明，先以“组织积累、验证复用”的情景探索，不代表已具备条件。';add('经营基础未说明，暂以先建设、后释放的条件情景探索；不是对当前成熟度的认定。');}
+  if(!d.evidence){d.evidence='用户业务描述：'+d.company.business+'。其余优势及路径为建议，尚未逐项核实。';add('目前仅有业务描述，优势线索需要进一步确认。');}
+  if(!d.rationale){d.rationale='根据业务描述暂作'+MODELS[READINESS[d.readiness].model].name+'情景建议，适用条件需核实。';add('经营情景由描述初步推断，尚未核实适用条件。');}
+ }
+ d.assumptions=[...new Set([...d.assumptions,...(assumptions.length?['页面补全的候选线索、文案或路径属于建议，尚未认定为企业已具备的优势。']:[]),...assumptions.filter(v=>v.startsWith('经营基础未说明'))])];
  for(const k of ['previous_parameters','original_parameters'])if(raw[k]&&typeof raw[k]==='object')d[k]=clone(raw[k]);
- const known=new Set([...Object.keys(d),'import_notes']);const extra=Object.keys(raw).filter(k=>!known.has(k));if(extra.length)notes.push('其他字段仅在原参数中保存，不改变固定曲线：'+extra.join('、'));
- const preserve=notes.length>0;if(Array.isArray(raw.import_notes))notes.unshift(...raw.import_notes.filter(v=>typeof v==='string'));
- if(notes.length){d.import_notes=[...new Set(notes)];if(preserve&&!d.original_parameters)d.original_parameters=clone(raw);}
+ const known=new Set([...Object.keys(d),'import_notes','model']);const extra=Object.keys(raw).filter(k=>!known.has(k));if(extra.length)notes.push('其他资料保存在原输入中，不改变固定曲线');
+ const preserve=notes.length>0||assumptions.length>0;if(Array.isArray(raw.import_notes))notes.unshift(...raw.import_notes.filter(v=>typeof v==='string'));
+ if(notes.length)d.import_notes=[...new Set(notes)];if(preserve&&!d.original_parameters)d.original_parameters=clone(raw);
  return d;
 }
 function migrate(raw){
@@ -593,37 +622,43 @@ function migrate(raw){
  d.first=s(raw.work?.task||raw.focus?.task);d.evidence=s(raw.work?.evidence||raw.focus?.experience?.evidence);
  d.previous_parameters=clone(raw);d.import_notes=['旧参数完整保留。新版诊断企业整体，原单项任务仅作起步线索；请补充客户、收入、企业积累与经营基础。旧曲线不自动转换。'];return d;
 }
+function extractObject(text){
+ // Find a single balanced JSON object without interpreting prose or executing code.
+ const candidates=[];let start=-1,depth=0,string=false,escape=false;
+ for(let i=0;i<text.length;i++){const c=text[i];if(start<0){if(c==='{'){start=i;depth=1;}continue;}if(string){if(escape)escape=false;else if(c==='\\')escape=true;else if(c==='"')string=false;continue;}if(c==='"')string=true;else if(c==='{')depth++;else if(c==='}'&&--depth===0){candidates.push(text.slice(start,i+1));start=-1;}}
+ if(candidates.length!==1)throw new Error('需要单份JSON');return candidates[0];
+}
 function parse(text){
  if(typeof text!=='string'||new TextEncoder().encode(text).length>320000)throw new InputError([{path:'input',message:'参数文本请控制在320 KB内'}]);
  const blocks=[...text.matchAll(/```(?:json)?\s*\n?([\s\S]*?)```/g)];if(blocks.length>1)throw new InputError([{path:'input',message:'请一次导入一份参数，当前有多个代码框'}]);
- let raw;try{raw=JSON.parse((blocks.length?blocks[0][1]:text).trim());}catch{throw new InputError([{path:'input',message:'JSON格式不完整，原输入仍保留；可修改后重试或直接填写'}]);}
+ let raw;const body=(blocks.length?blocks[0][1]:text).trim();try{try{raw=JSON.parse(body);}catch{raw=JSON.parse(extractObject(body));}}catch{throw new InputError([{path:'input',message:'没有读到完整参数。点“复制修正要求”让 AI 重排即可，已有草稿仍保留'}]);}
  if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new InputError([{path:'input',message:'请导入一份JSON参数对象'}]);
+ if(raw.version?.startsWith?.('GAIDN-')&&raw.enterprise){
+  const d=blank();d.company.name=typeof raw.enterprise.name==='string'?raw.enterprise.name:'';d.company.business=typeof raw.enterprise.business==='string'?raw.enterprise.business:'';d.first=raw.focus_work?.work_name||'';d.evidence=raw.focus_work?.real_example||'';d.previous_parameters=clone(raw);d.import_notes=['这份来自旧版单项工作模板。业务与原输入已保留，请点“复制升级提示词”，让 AI 回到整家企业重新提出优势与机会；不会把获客不顺的经历自动视为专家优势。'];return d;
+ }
  if(['1.0','2.0','3.0','3.1','4.0'].includes(raw.schema_version))return migrate(raw);
- if(raw.schema_version!=='5.0'&&!(raw.schema_version===undefined&&raw.company))throw new InputError([{path:'schema_version',message:'请使用本页提示词返回schema5.0；旧版1.0至4.0可导入补齐'}]);
+ if(!['5.0','5.1',undefined].includes(raw.schema_version))throw new InputError([{path:'schema_version',message:'请使用本页新版提示词；旧版参数也可导入保留'}]);
+ if(!raw.company)throw new InputError([{path:'company',message:'参数中还没有业务资料，请点“复制修正要求”交给 AI 整理'}]);
  return normalize(raw);
 }
-function requiredQuestions(d){
- const q=[],bad=(path,message)=>q.push({path,message}),get=path=>path.split('.').reduce((o,k)=>o?.[k],d);
- for(const [path,limit] of Object.entries(LIMITS)){const v=get(path)||'';if(units(v)>limit||/[\r\n]/.test(v))bad(path,'请将'+LABELS[path]+'精简为一段、约'+limit+'字以内，原输入仍保留');}
- for(const path of ['company.name','company.business','company.customers','company.income','diagnosis','priority'])if(!get(path)?.trim())bad(path,'请补充'+LABELS[path]);
- if(units(d.company.business+' · '+d.company.customers)>36)bad('company.business','主营业务与客户合计请再精简，便于海报展示');
- for(const k of ['evidence','rationale'])if(d[k].trim().length<8||d[k].length>1200)bad(k,'请用8—1200字说明'+LABELS[k]+'，可如实写待核实部分');
- if(!MECHANISMS[d.mechanism])bad('mechanism','请选择最值得先拥抱 AI 的企业优势');
- if(!READINESS[d.readiness]?.model)bad('readiness','请确认经营基础，页面会自动匹配固定曲线');
- if(d.assets.length!==3||d.assets.some(x=>!x||units(x)>8||/[\r\n]/.test(x)))bad('assets','请给出三项真实积累，每项约8字以内，最值得先用 AI 的放第一项');
- if(d.headline.length!==2||d.headline.some(x=>!x||units(x)>15||/[\r\n]/.test(x)))bad('headline','请写两行结论，每行约15字以内，指出积累怎样成为企业能力');
+function requiredQuestions(raw){
+ const d=normalize(raw),q=[];
+ if(!d.company.business.trim())q.push({path:'company.business',message:'说一句你们做什么生意即可'});
+ if(!MECHANISMS[d.mechanism])q.push({path:'mechanism',message:'AI还未给出企业优势类型，可点“复制升级提示词”重做，或在下方补选'});
+ for(const [k,v] of Object.entries(d.company))if(v.length>2400)q.push({path:'company.'+k,message:'这段资料超过2400字，请保留业务摘要'});
+ for(const k of ['evidence','rationale','diagnosis','priority','first'])if(d[k].length>6000)q.push({path:k,message:'内容过长，请让 AI 保留6000字以内摘要'});
  return q;
 }
-function validate(d){const issues=requiredQuestions(d);if(issues.length)throw new InputError(issues);return clone(d);}
+function validate(d){const issues=requiredQuestions(d);if(issues.length)throw new InputError(issues);return normalize(d);}
 function diagnose(raw){
- const d=clone(raw),required=requiredQuestions(d),kind=d.mechanism,def=MECHANISMS[kind],id=READINESS[d.readiness]?.model;
+ const d=normalize(raw),required=requiredQuestions(d),kind=d.mechanism,def=MECHANISMS[kind],id=READINESS[d.readiness]?.model;
  if(!def||!id)throw new InputError(required);
  const curve={id,...clone(MODELS[id])},nodes=d.assets.map((label,i)=>({id:'asset'+i,label,primary:i===0}));
- const basis=[{name:'这份判断的依据',detail:'企业：'+d.company.name+'\n主营：'+d.company.business+'\n客户：'+d.company.customers+'\n收入：'+d.company.income+'\n\n企业积累：\n'+d.evidence+'\n\n优先优势：'+def.name+'\n'+def.meaning+'\n\n经营基础：'+READINESS[d.readiness].name+'\n适用条件：'+READINESS[d.readiness].condition+'\n选择依据：'+d.rationale+'\n\n情景：'+curve.name+'。统一比较同等团队与时间下可稳定承担的业务量，不预测营收、日期或增长率。'},...nodes.map((n,i)=>({name:n.label,detail:(i===0?'这是本次最值得先与 AI 结合的企业积累。':'这是支持优先方向的企业积累。')+'\n'+d.evidence+'\n\n建议方向：'+d.priority+'\n图形显示积累的组织方式，亮度、大小和连线不表示测量分数或已实现效果。'}))];
+ const basis=[{name:'这份判断的依据',detail:'企业：'+d.company.name+'\n主营：'+d.company.business+'\n客户：'+(d.company.customers||'未提供，不影响初步探索')+'\n收入：'+(d.company.income||'未提供，不影响初步探索')+'\n\n用户资料与判断依据：\n'+d.evidence+(d.assumptions.length?'\n\nAI联想及待确认：\n'+d.assumptions.join('\n'):'')+'\n\n优先优势：'+def.name+'\n'+def.meaning+'\n\n经营基础：'+READINESS[d.readiness].name+'\n适用条件：'+READINESS[d.readiness].condition+'\n选择依据：'+d.rationale+'\n\n情景：'+curve.name+'。统一比较同等团队与时间下可稳定承担的业务量，不预测营收、日期或增长率。'},...nodes.map((n,i)=>({name:n.label,detail:(i===0?'这是本次最值得先与 AI 结合的企业积累。':'这是支持优先方向的企业积累。')+'\n'+d.evidence+'\n\n建议方向：'+d.priority+'\n图形显示积累的组织方式，亮度、大小和连线不表示测量分数或已实现效果。'}))];
  return {data:d,kind,nodes,classification:def.name,headline:d.headline,curve,basis,required,complete:!required.length};
 }
 function curveLevel(curve,t){t=Math.max(0,Math.min(1,t));const id=typeof curve==='string'?curve:curve.id;if(id==='fast')return .74*(1-(1-t)**4);if(id==='steady')return .74*t;if(id==='delayed'){const z=Math.max(0,Math.min(1,(t-.32)/.68));return .74*z*z*(3-2*z);}if(id==='network')return [.12,.43,.73].reduce((n,start)=>{const z=Math.max(0,Math.min(1,(t-start)/.12));return n+.74/3*z*z*(3-2*z);},0);throw new Error('未确认经营情景');}
-const api={VERSION:'5.0',clone,InputError,MECHANISMS,MECHANISM_OPTIONS,READINESS,READINESS_OPTIONS,MODELS,LIMITS,units,blank,normalize,parse,requiredQuestions,validate,diagnose,curveLevel};if(typeof module!=='undefined'&&module.exports)module.exports=api;else host.GAIDNModel=api;
+const api={VERSION:'5.1',clone,InputError,MECHANISMS,MECHANISM_OPTIONS,READINESS,READINESS_OPTIONS,MODELS,LIMITS,units,blank,normalize,parse,requiredQuestions,validate,diagnose,curveLevel};if(typeof module!=='undefined'&&module.exports)module.exports=api;else host.GAIDNModel=api;
 })(globalThis);
 </script>
   <script>(function(h){const e=[
@@ -816,14 +851,29 @@ const api={VERSION:'5.0',clone,InputError,MECHANISMS,MECHANISM_OPTIONS,READINESS
 const A=typeof module!=='undefined'&&module.exports?require('./poster-assets.js'):h.GAIDNPosterAssets;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#x27;'}[c]));
 function wrap(s,limit=31){const lines=[];let line='',n=0;for(const ch of s){const k=ch.charCodeAt(0)<128?.55:1;if(n+k>limit){lines.push(line);line=ch;n=k;}else{line+=ch;n+=k;}}if(line)lines.push(line);return lines.join('\n');}
-function replaceText(svg,role,value){const re=new RegExp('<text data-role="'+role+'"[^>]*>[\\s\\S]*?</text>');return svg.replace(re,old=>{const tag=old.slice(0,old.indexOf('>')+1),x=tag.match(/ x="([^"]+)"/)[1],size=Number(tag.match(/font-size="([^"]+)"/)[1]),dy=Math.round(size*1.38*100)/100;return tag+String(value).split('\n').map((s,i)=>'<tspan x="'+x+'" dy="'+(i?dy:0)+'">'+esc(s)+'</tspan>').join('')+'</text>';});}
+function cut(s,limit){let n=0,out='';for(const ch of s){const w=ch.charCodeAt(0)<128?.55:1;if(n+w>limit)return out+'…';n+=w;out+=ch;}return out;}
+const units=s=>[...s].reduce((n,c)=>n+(c.charCodeAt(0)<128?.55:1),0);
+function fitTag(old,value,config){
+ let tag=old.slice(0,old.indexOf('>')+1);const x=tag.match(/ x="([^"]+)"/)[1],base=Number(tag.match(/font-size="([^"]+)"/)[1]);let size=base,lines=String(value).split('\n');
+ if(config){const [width,min,maxLines]=config;if(lines.length>maxLines)lines=[lines.join('')];if(maxLines>1&&lines.length===1&&units(lines[0])*base>width){lines=wrap(lines[0],width/base).split('\n');}
+  if(lines.length>maxLines){size=min;lines=wrap(lines.join(''),width/size).split('\n');}
+  const max=Math.max(...lines.map(units),1);size=Math.max(min,Math.min(size,Math.floor(width/max*100)/100));if(size>base)size=base;
+  lines=lines.slice(0,maxLines).map(v=>cut(v,width/size-1));if(String(value).replace(/\n/g,'').length>lines.join('').replace(/…/g,'').length&&!lines.at(-1).endsWith('…'))lines[lines.length-1]=cut(lines.at(-1),width/size-1)+'…';
+  // Keep the approved reference SVG unchanged when no adaptation is needed.
+  const original=String(value).split('\n');if(original.length<=maxLines&&original.every(v=>units(v)*base<=width)){size=base;lines=original;}
+ }
+ tag=tag.replace(/font-size="[^"]+"/,'font-size="'+size+'"');const dy=Math.round(size*1.38*100)/100;
+ return tag+lines.map((v,i)=>'<tspan x="'+x+'" dy="'+(i?dy:0)+'">'+esc(v)+'</tspan>').join('')+'</text>';
+}
+function replaceText(svg,role,value){const re=new RegExp('<text data-role="'+role+'"[^>]*>[\\s\\S]*?</text>'),configs={company:[772,24,1],business:[772,16,1],headline:[772,34,2],diagnosis:[772,22,3],priority:[732,19,1],'first-step':[772,16,1]};return svg.replace(re,old=>fitTag(old,value,configs[role]));}
 const positions={knowledge:[[450,224],[229,65],[685,265]],process:[[450,221],[207,274],[696,274]],expert:[[350,234],[176,28],[176,320]],project:[[450,233],[204,37],[686,293]],matching:[[450,222],[248,39],[652,280]],network:[[450,-1],[150,192],[750,192]]};
 function poster(r,width=900){
- const d=r.data;if(!A.templates[r.kind]||!A.curves[r.curve.id])throw new Error('企业优势和经营基础尚未确认');
+ const d=r.data,inferred=Boolean(d.assumptions?.length);if(!A.templates[r.kind]||!A.curves[r.curve.id])throw new Error('企业优势和经营基础尚未确认');
  let svg=A.templates[r.kind].replace('__FONT__',A.font).replace(/aria-label="[^"]*"/,'aria-label="'+esc(d.company.name)+'企业 AI 化机会画像'+(d.is_example?' · 虚构示例':'')+'"');
  const exampleIndex={knowledge:1,process:2,expert:3,project:4,matching:5,network:6}[r.kind];
- for(const [role,value] of Object.entries({company:d.company.name,business:d.company.business+' · '+d.company.customers,headline:d.headline.join('\n'),diagnosis:wrap(d.diagnosis),priority:d.priority,'first-step':d.first?'起步例子｜'+d.first:'起步例子｜围绕优先方向，先验证一组真实业务。',example:d.is_example?String(exampleIndex).padStart(2,'0')+' / 虚构企业示例':'企业经营探索',kind:r.classification}))svg=replaceText(svg,role,value);
- let assetIndex=0;svg=svg.replace(/<text data-role="asset(?:-primary)?"[^>]*>[\s\S]*?<\/text>/g,old=>{const value=d.assets[assetIndex++];return old.replace(/(<tspan[^>]*>)[\s\S]*?(<\/tspan>)/,'$1'+esc(value).replace(/\$/g,'$$$$')+'$2');});
+ for(const [role,value] of Object.entries({company:d.company.name,business:d.company.business+(d.company.customers?' · '+d.company.customers:''),headline:d.headline.join('\n'),diagnosis:wrap(d.diagnosis),priority:d.priority,'first-step':d.first?'起步例子｜'+d.first:'起步例子｜围绕优先方向，先验证一组真实业务。',example:d.is_example?String(exampleIndex).padStart(2,'0')+' / 虚构企业示例':(inferred?'初步画像 · 含 AI 联想':'企业经营探索'),kind:r.classification}))svg=replaceText(svg,role,value);
+ if(inferred){svg=replaceText(svg,'scope','优势线索 → AI 建议方向');svg=replaceText(svg,'disclaimer','含 AI 联想，适用条件待确认；曲线不代表日期、增幅或营收预测。');}
+ let assetIndex=0;svg=svg.replace(/<text data-role="asset(?:-primary)?"[^>]*>[\s\S]*?<\/text>/g,old=>{const value=d.assets[assetIndex++]||'待确认线索';return fitTag(old,value,[220,18,1]);});
  svg=svg.replace(/<g data-fixed-model="[\s\S]*?<\/g>/,A.curves[r.curve.id]);
  const scale=width/900;svg=svg.replace('width="900" height="1640"','width="'+width+'" height="'+1640*scale+'"');
  const hitTargets=positions[r.kind].map(([x,y],index)=>({index,x:(x-110)*scale,y:(394+.88*y-27)*scale,width:220*scale,height:40*scale}));
@@ -854,24 +904,24 @@ function show(view,scroll=true){
 }
 function issuesAt(id,issues){const box=$(id);box.replaceChildren();box.hidden=!issues.length;if(!issues.length)return;const ul=document.createElement('ul');for(const item of issues){const li=document.createElement('li');li.textContent=item.message;ul.append(li);}box.append(ul);}
 function importData(text,method='paste'){
- try{state.draft=M.parse(text);state.dirty=true;state.active=null;state.reviewEdited=false;state.lastErrors=[];issuesAt('#import-errors',[]);$('#copy-repair').hidden=true;renderReview();persist();show('review');track('parameter_import',{input_method:method,input_origin:origin(),status:'success'});status(state.draft.previous_parameters?'旧参数完整保留。请补充企业整体信息，缺项在本页填写。':state.draft.is_example?'已载入虚构示例，核对后可生成。':'资料已读入；已知内容保留，缺项直接补齐即可。');}
+ try{state.draft=M.parse(text);state.dirty=true;state.active=null;state.reviewEdited=false;state.lastErrors=[];issuesAt('#import-errors',[]);$('#copy-repair').hidden=true;renderReview();persist();show('review');track('parameter_import',{input_method:method,input_origin:origin(),status:'success'});status(state.draft.previous_parameters?'旧参数完整保留。请补充企业整体信息，缺项在本页填写。':state.draft.is_example?'已载入虚构示例，核对后可生成。':'资料已整理好，看看理解是否合适，直接生成即可。');}
  catch(e){track('parameter_import',{input_method:method,input_origin:'none',status:'failure',error_code:'invalid_parameters'});state.lastErrors=e.issues||[{message:'参数未能导入，请检查文件内容'}];issuesAt('#import-errors',state.lastErrors);$('#copy-repair').hidden=false;status('原输入与已有草稿仍保留，可修正后重试，或点“直接填写”。');}
 }
 function readReview(){const data=M.clone(state.draft);$('#review-form').querySelectorAll('[data-path]').forEach(el=>{const parts=el.dataset.path.split('.');let node=data;for(const part of parts.slice(0,-1))node=node[part];node[parts.at(-1)]=el.dataset.lines!==undefined?el.value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean):el.dataset.array!==undefined?el.value.split(/[、,，\n]/).map(x=>x.trim()).filter(Boolean):el.value.trim();});return data;}
 function renderReview(){
  const d=state.draft,def=M.MECHANISMS[d.mechanism],ready=M.READINESS[d.readiness],cm=M.MODELS[ready?.model];
- const list=(path,values,placeholder)=>`<input data-path="${path}" data-array value="${esc(values.join('、'))}" placeholder="${placeholder}">`;
- let html=`<fieldset id="preflight-check" class="review-block" hidden><legend>还需确认</legend><p class="small muted">点缺项可直接填写，不必重新与 AI 对话。</p><ul id="preflight-list"></ul><button type="button" id="copy-questions" class="text-button">复制补问清单给 AI</button></fieldset>`;
- if(d.import_notes?.length)html+=`<div class="notice-box"><strong>导入说明</strong><p class="small muted">${d.import_notes.map(esc).join('<br>')}</p></div>`;
- html+=`<fieldset class="review-block"><legend>01 · 企业靠什么做生意</legend><div class="review-grid"><label>企业名称${input('company.name',d.company.name,40)}</label><label>主营业务${input('company.business',d.company.business,80)}</label><label>主要客户${input('company.customers',d.company.customers,60)}</label><label>收入来源${input('company.income',d.company.income,80)}</label></div>${d.is_example?'<p class="small muted">虚构企业示例，结果图片保留示例标识。</p>':''}</fieldset>`;
- html+=`<fieldset class="review-block"><legend>02 · 哪项积累最值得先拥抱 AI</legend><label>企业优势${select('mechanism',M.MECHANISM_OPTIONS,d.mechanism)}</label>${def?`<p class="review-summary">${esc(def.meaning)}</p>`:''}<label>三项真实积累 · 优先项放第一位${list('assets',d.assets,'用顿号分隔三项，每项约8字以内')}</label><details${!d.evidence?' open':''}><summary>事实依据 · 做过什么、留下什么</summary><label>已有积累的事实依据${field('evidence',d.evidence,1200)}</label><p class="small muted">只用真实积累，计划与待核实内容请明确标注。图中亮度和大小不表示评分。</p></details><label>两行结论 · 积累怎样成为企业能力<textarea data-path="headline" data-lines rows="2" placeholder="每行约15字以内，用换行分开">${esc(d.headline.join('\n'))}</textarea></label><label>整体诊断 · 简述判断与走向${field('diagnosis',d.diagnosis,150)}</label><label>AI 优先方向${input('priority',d.priority,80)}</label><label>起步例子 · 可不填${input('first',d.first,80)}</label><p class="small muted">诊断对象是整家企业；起步例子只帮助迈出第一步。</p></fieldset>`;
- html+=`<fieldset class="review-block"><legend>03 · AI 化后，生意怎样变</legend><label>企业目前的经营基础${select('readiness',M.READINESS_OPTIONS,d.readiness)}</label>${cm?`<div class="model-summary"><strong>${esc(cm.name)} · ${esc(cm.tag)}</strong><p>${esc(cm.subtitle)}</p><p class="small muted">适用条件：${esc(ready.condition)}</p></div>`:'<p class="small muted">确认一项经营基础，即可匹配四套固定情景之一。</p>'}<label>为什么符合这项基础 · 如实说明依据${field('rationale',d.rationale,1200)}</label><p class="small muted">四套曲线统一表示：同等团队与时间下，可稳定承担的业务量。轴、形态和阶段固定，不生成企业专属增长数字，也不预测日期或营收。</p></fieldset>`;
- if(d.previous_parameters||d.original_parameters)html+=`<details class="review-block"><summary>查看保留的原参数</summary><p class="small muted">仅用于核对与草稿下载，不参与新版曲线计算。</p><pre class="original-parameters">${esc(JSON.stringify(d.previous_parameters||d.original_parameters,null,2))}</pre></details>`;
+ const list=(path,values)=>`<input data-path="${path}" data-array value="${esc(values.join('、'))}">`;
+ let html=`<fieldset id="preflight-check" class="review-block" hidden><legend>还差一点就能出图</legend><ul id="preflight-list"></ul><button type="button" id="copy-questions" class="secondary">复制升级提示词，让 AI 帮我整理</button></fieldset>`;
+ if(d.previous_parameters&&d.import_notes?.length)html+=`<div class="notice-box"><strong>资料已保留</strong><p class="small muted">${d.import_notes.map(esc).join('<br>')}</p></div>`;
+ html+=`<fieldset class="review-block"><legend>看看 AI 理解得对不对</legend><div class="review-grid"><label>企业名称 · 可用简称${input('company.name',d.company.name,2400)}</label><label>你们做什么生意${input('company.business',d.company.business,2400)}</label></div><details><summary>客户、收入与原始依据 · 可不填</summary><div class="review-grid"><label>主要客户${input('company.customers',d.company.customers,2400)}</label><label>收入来源${input('company.income',d.company.income,2400)}</label></div><label>用户资料与判断依据${field('evidence',d.evidence,6000)}</label></details>${d.is_example?'<p class="small muted">虚构企业示例，海报保留示例标识。</p>':''}</fieldset>`;
+ html+=`<fieldset class="review-block"><legend>AI 提出的企业机会</legend><p class="review-summary"><strong>${esc(d.headline.join(''))||'还没有标题也没关系，页面会按方向补一版。'}</strong></p><p class="muted">${esc(d.diagnosis)}</p><p class="review-summary">AI 优先方向：${esc(d.priority)||'选好优势类型后，由页面补作建议。'}</p><p class="small muted">${def?esc(def.name)+' · '+d.assets.map(esc).join(' / '):'这份参数还未给出企业整体的优势判断。'}</p>${d.assumptions?.length?`<div class="notice-box"><strong>AI 联想 · 等你纠正</strong><p class="small muted">${d.assumptions.map(esc).join('<br>')}</p></div>`:''}<details${!def?' open':''}><summary>修改 AI 提出的判断 · 按需展开</summary><label>本次优先机会${select('mechanism',M.MECHANISM_OPTIONS,d.mechanism)}</label><label>主图上的三项线索${list('assets',d.assets)}</label><label>两行标题<textarea data-path="headline" data-lines rows="2">${esc(d.headline.join('\n'))}</textarea></label><label>诊断摘要${field('diagnosis',d.diagnosis,6000)}</label><label>AI 优先方向${input('priority',d.priority,6000)}</label><label>起步例子 · 可不填${input('first',d.first,6000)}</label><label>联想与待确认 · 每行一项<textarea data-path="assumptions" data-lines rows="2">${esc((d.assumptions||[]).join('\n'))}</textarea></label></details></fieldset>`;
+ html+=`<fieldset class="review-block"><legend>对应的经营变化情景</legend><div class="model-summary"><strong>${cm?esc(cm.name)+' · '+esc(cm.tag):'先整理积累，再验证复用'}</strong><p>${cm?esc(cm.subtitle):'信息不充分时，先按条件情景探索。'}</p></div><details><summary>查看或调整这条路径 · 可不改</summary><label>当前路线${select('readiness',M.READINESS_OPTIONS,d.readiness)}</label><p class="small muted">${esc(ready?.condition||'条件尚未核实。')}</p><label>路线判断的依据${field('rationale',d.rationale,6000)}</label></details><p class="small muted">曲线统一表示同等团队与时间下可稳定承担的业务量，是固定的条件情景，不预测日期、增幅或营收。</p></fieldset>`;
+ if(d.previous_parameters||d.original_parameters)html+=`<details class="review-block"><summary>查看保留的原输入</summary><pre class="original-parameters">${esc(JSON.stringify(d.previous_parameters||d.original_parameters,null,2))}</pre></details>`;
  $('#review-form').innerHTML=html;issuesAt('#review-errors',[]);updatePreflight();
 }
-function updatePreflight(){const d=readReview(),q=M.requiredQuestions(d),box=$('#preflight-check'),list=$('#preflight-list');box.hidden=!q.length;list.replaceChildren();for(const item of q){const li=document.createElement('li'),b=document.createElement('button');b.type='button';b.className='missing-link';b.dataset.missingPath=item.path;b.textContent=item.message;li.append(b);list.append(li);}$('#generate-result').disabled=Boolean(q.length);$('#generate-result').textContent=q.length?'还需确认 '+q.length+' 项':'确认信息，生成画像';}
+function updatePreflight(){const d=readReview(),q=M.requiredQuestions(d),box=$('#preflight-check'),list=$('#preflight-list');box.hidden=!q.length;list.replaceChildren();for(const item of q){const li=document.createElement('li'),b=document.createElement('button');b.type='button';b.className='missing-link';b.dataset.missingPath=item.path;b.textContent=item.message;li.append(b);list.append(li);}$('#generate-result').disabled=Boolean(q.length);$('#generate-result').textContent=q.length?'还需确认 '+q.length+' 项':'生成我的企业海报';}
 function markDirty(){if(!state.reviewEdited){track('review_edit',{input_origin:origin()});state.reviewEdited=true;}state.dirty=true;state.draft=readReview();persist();document.querySelector('[data-step="result"]').disabled=true;updatePreflight();status('修改已保留，确认后重新生成。');}
-function generate(){try{const data=M.validate(readReview()),result=M.diagnose(data);state.draft=data;persist();state.result=result;state.dirty=false;state.active=null;issuesAt('#review-errors',[]);renderBasis();show('result');$('#result-subtitle').textContent=result.classification+' · '+result.curve.name+(data.is_example?' · 虚构示例':'');status('画像已生成，可以查看依据、修改或保存图片。');track('diagnosis_generate',{input_origin:origin(),status:'success',result_status:result.curve.id==='explore'?'pending':'complete'});}catch(e){track('diagnosis_generate',{input_origin:origin(),status:'failure',result_status:'invalid'});issuesAt('#review-errors',e.issues||[{message:'请检查核对内容后重试'}]);$('#review-errors').scrollIntoView({block:'center'});status('');}}
+function generate(){try{const data=M.validate(readReview()),result=M.diagnose(data);state.draft=data;persist();state.result=result;state.dirty=false;state.active=null;issuesAt('#review-errors',[]);renderBasis();show('result');$('#result-subtitle').textContent=result.classification+' · '+result.curve.name+(data.is_example?' · 虚构示例':'');status('海报已生成，可以修改或保存。含联想的结果会保留初步判断标识；长文案自动适配版面，完整内容保留在参数中。');track('diagnosis_generate',{input_origin:origin(),status:'success',result_status:result.curve.id==='explore'?'pending':'complete'});}catch(e){track('diagnosis_generate',{input_origin:origin(),status:'failure',result_status:'invalid'});issuesAt('#review-errors',e.issues||[{message:'请检查核对内容后重试'}]);$('#review-errors').scrollIntoView({block:'center'});status('');}}
 function renderBasis(){const r=state.result,box=$('#basis-buttons');box.replaceChildren();r.basis.forEach((item,i)=>{const b=document.createElement('button');b.type='button';b.className='basis-button';b.dataset.basis=String(i);b.textContent=item.name;b.setAttribute('aria-pressed',String((state.active===null?0:state.active+1)===i));box.append(b);});$('#basis-detail').textContent=r.basis[state.active===null?0:state.active+1].detail;$('#basis-detail').style.whiteSpace='pre-line';}
 function focusBasis(value){state.active=Number(value)===0?null:Number(value)-1;renderBasis();drawPoster();$('#basis-buttons [data-basis="'+value+'"]').focus({preventScroll:true});}
 function drawPoster(){if(!state.result||state.view!=='result')return;const frame=$('#poster-frame'),width=frame.clientWidth;if(!width)return;const rendered=GAIDNPoster.poster(state.result,width,state.active);frame.innerHTML=rendered.svg;rendered.hitTargets.forEach(t=>{const b=document.createElement('button');b.type='button';b.className='poster-hit';Object.assign(b.style,{left:t.x+'px',top:t.y+'px',width:t.width+'px',height:t.height+'px'});b.dataset.posterAsset=String(t.index);b.setAttribute('aria-label','查看'+state.result.nodes[t.index].label+'的依据');b.setAttribute('aria-pressed',String(state.active===t.index));frame.append(b);});}
@@ -898,17 +948,17 @@ $('#skill-preview').value=skill;
 GAIDNExamples.forEach(e=>{const o=document.createElement('option');o.value=e.id;o.textContent=e.name;$('#example-select').append(o);});
 document.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.step)));
 $('.brand').addEventListener('click',e=>{e.preventDefault();show('start');});
-$('#copy-skill').addEventListener('click',async()=>{if(await copy(skill)){track('prompt_copy',{status:'success'});status('已复制。发给常用AI，介绍企业的业务、客户、收入和已有积累；拿到参数后回来导入。');}else{track('prompt_copy',{status:'manual_copy'});$('#prompt-details').open=true;$('#skill-preview').focus();$('#skill-preview').select();status('自动复制不可用，已选中提示词，请手动复制。');}});
+$('#copy-skill').addEventListener('click',async()=>{if(await copy(skill)){track('prompt_copy',{status:'success'});status('已复制。发给常用 AI，随口介绍一下生意即可；AI 会提建议并整理参数。');}else{track('prompt_copy',{status:'manual_copy'});$('#prompt-details').open=true;$('#skill-preview').focus();$('#skill-preview').select();status('自动复制不可用，已选中提示词，请手动复制。');}});
 $('#download-skill').addEventListener('click',()=>{download(new Blob([skill],{type:'text/markdown;charset=utf-8'}),'SKILL.md');track('skill_download');});
 $('#import-parameters').addEventListener('click',()=>importData($('#parameter-input').value));
 $('#pick-file').addEventListener('click',()=>$('#parameter-file').click());
 $('#parameter-file').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;if(file.size>320000){issuesAt('#import-errors',[{message:'请使用不超过320 KB的参数文件'}]);track('parameter_import',{input_method:'file',input_origin:'none',status:'failure',error_code:'file_size'});}else{try{const text=await file.text();$('#parameter-input').value=text;importData(text,'file');}catch{track('parameter_import',{input_method:'file',input_origin:'none',status:'failure',error_code:'file_read'});issuesAt('#import-errors',[{message:'文件未能读取，请直接粘贴参数'}]);}}e.target.value='';});
-$('#copy-repair').addEventListener('click',async()=>{const request=skill+'\n\n请修正以下待整理参数，先核实缺失事实，不补造内容。网页提示：\n'+state.lastErrors.map(e=>e.message).join('\n')+'\n待整理参数：\n'+$('#parameter-input').value.slice(0,320000);const ok=await copy(request);track('repair_copy',{status:ok?'success':'manual_copy'});status(ok?'已复制，可以发回AI修正。':'自动复制不可用，请把错误提示发回AI。');});
+$('#copy-repair').addEventListener('click',async()=>{const request=skill+'\n\n请按新版企业整体视角整理下面资料，主动提出机会并标明推测，不要逐项追问参数。请只返回一份符合schema5.0的完整JSON。网页提示：\n'+state.lastErrors.map(e=>e.message).join('\n')+'\n待整理参数：\n'+$('#parameter-input').value.slice(0,320000);const ok=await copy(request);track('repair_copy',{status:ok?'success':'manual_copy'});status(ok?'已复制，可以发回AI修正。':'自动复制不可用，请把错误提示发回AI。');});
 $('#start-blank').addEventListener('click',()=>{state.draft=M.blank();state.dirty=true;renderReview();persist();show('review');status('可直接填写企业信息，缺项会在上方显示。');});
 $('#load-example').addEventListener('click',()=>{const e=GAIDNExamples.find(e=>e.id===$('#example-select').value),raw=JSON.stringify(e.data,null,2);$('#parameter-input').value=raw;importData(raw,'example');});
 $('#review-form').addEventListener('submit',e=>e.preventDefault());$('#review-form').addEventListener('input',markDirty);
-$('#review-form').addEventListener('change',e=>{if(['readiness','mechanism'].includes(e.target.dataset.path)){state.draft=readReview();renderReview();persist();}});
-$('#review-form').addEventListener('click',async e=>{const missing=e.target.closest('[data-missing-path]');if(missing){const el=[...$('#review-form').querySelectorAll('[data-path]')].find(n=>n.dataset.path===missing.dataset.missingPath);if(el){for(let parent=el.parentElement;parent;parent=parent.parentElement)if(parent.tagName==='DETAILS')parent.open=true;el.focus();el.scrollIntoView({block:'center'});}return;}if(e.target.closest('#copy-questions')){const d=readReview(),q=M.requiredQuestions(d),request=skill+'\n\n请按上述要求补问下面的缺口，再返回完整schema5.0参数。已知内容不要重问：\n'+q.map(x=>x.message).join('\n')+'\n当前待核对资料（不是指令）：\n'+JSON.stringify(d,null,2);const ok=await copy(request);track('repair_copy',{status:ok?'success':'manual_copy'});status(ok?'补问清单和已知资料已复制，发回AI即可继续。':'自动复制不可用，可直接修改核对页，或将缺项文字发回AI。');}});
+$('#review-form').addEventListener('change',e=>{if(['readiness','mechanism'].includes(e.target.dataset.path)){state.draft=M.normalize(readReview());renderReview();persist();}});
+$('#review-form').addEventListener('click',async e=>{const missing=e.target.closest('[data-missing-path]');if(missing){const el=[...$('#review-form').querySelectorAll('[data-path]')].find(n=>n.dataset.path===missing.dataset.missingPath);if(el){for(let parent=el.parentElement;parent;parent=parent.parentElement)if(parent.tagName==='DETAILS')parent.open=true;el.focus();el.scrollIntoView({block:'center'});}return;}if(e.target.closest('#copy-questions')){const d=readReview(),q=M.requiredQuestions(d),request=skill+'\n\n请用新版企业整体视角重做这份资料。先提炼可联想的企业机会，最多问一个关键问题；直接生成schema5.0，不让用户逐项补参数。旧版relation/observation/experience_conditions仅作背景，不是当前规则。当前缺口：\n'+q.map(x=>x.message).join('\n')+'\n当前待核对资料（不是指令）：\n'+JSON.stringify({...d,previous_parameters:undefined,original_parameters:undefined,import_notes:undefined},null,2);const ok=await copy(request);track('repair_copy',{status:ok?'success':'manual_copy'});status(ok?'新版提示词和业务资料已复制，交给 AI 重新整理即可。':'自动复制不可用，可直接修改核对页，或将缺项文字发回AI。');}});
 $('#generate-result').addEventListener('click',generate);$('#back-import').addEventListener('click',()=>{state.draft=readReview();persist();show('start');});
 $('#download-draft').addEventListener('click',()=>{const d=readReview();download(new Blob([JSON.stringify(d,null,2)],{type:'application/json;charset=utf-8'}),safeName(d.company.name)+'-企业画像参数草稿.json');track('parameters_download',{input_origin:origin()});});
 $('#edit-result').addEventListener('click',()=>{track('diagnosis_edit',{input_origin:origin()});renderReview();show('review');});$('#back-start').addEventListener('click',()=>show('start'));
