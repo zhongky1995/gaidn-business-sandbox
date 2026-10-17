@@ -1,8 +1,8 @@
 {
-  "version": "5.3.0",
+  "version": "5.3.1",
   "parameter_schema_version": "5.0",
-  "html_sha256": "b6a5e19b1843bd264bbbaddf7947d03540071cb63751dba530ea4aafd6b085ba",
-  "skill_sha256": "3841919933d53a8337b3480bac41a9009a88d13fc2afa16cebc1f49fcb976c2d",
-  "bytes": 391336,
+  "html_sha256": "dd8ce8e22706f58fb1c9e1a56064717288eb251b449ee8eb3f13711816e441b0",
+  "skill_sha256": "4176e53f09a459a5bd11091fdf95df1bf8c0533d9d21a8bbb74d310f39e76a2b",
+  "bytes": 391732,
   "analytics_measurement_id": "G-R3SEBYCRSR"
 }
